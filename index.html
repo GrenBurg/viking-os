@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Josefin+Slab:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#07060d; --bg2:#0d0b1a; --panel:rgba(14,12,30,.82);
@@ -328,6 +328,97 @@
   #stage.short #forecast.withp2k .fd .mx{font-size:32px}
   #stage.short #forecast.withp2k .fd .mn{font-size:24px}
   #stage.short #forecast.withp2k .fd{padding:6px 0}
+
+  /* =====================================================================
+     v2026-11-14.5 — typografie, teal-accent, pictogrammen, weergrafiek,
+     opstartscherm, glitches
+     ===================================================================== */
+  :root{ --teal:#56f0dc; --serif:'Josefin Slab',Georgia,serif;
+         --tglow:0 0 2px rgba(86,240,220,.9),0 0 9px rgba(86,240,220,.5),0 0 20px rgba(86,240,220,.2); }
+
+  /* minder beeldbolling: zachter vignet, geen zware binnenschaduw */
+  #fx{background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.30) 0 2px, transparent 2px 4px),
+      radial-gradient(ellipse 90% 85% at center, transparent 72%, rgba(0,0,0,.45) 100%);
+    box-shadow:inset 0 0 50px 8px rgba(0,0,0,.55)}
+
+  /* --- typografie in twee lagen: uitgerekte slab-serif voor systeemtitels --- */
+  .ser{display:inline-block;font-family:var(--serif);font-weight:600;transform:scaleX(1.32);transform-origin:left center;
+       letter-spacing:.06em;white-space:nowrap}
+  .ptitle .ser{font-size:.86em;text-transform:uppercase}
+  .logo{font-family:var(--serif);font-weight:700;font-size:50px;letter-spacing:.12em}
+  .logo .ser{transform:scaleX(1.45)}
+  #cursor{margin-left:150px}
+  .date .ser{font-size:.86em;text-transform:uppercase;transform:scaleX(1.08)}
+  .dayhead .ser{font-size:.92em;transform:scaleX(1.25);letter-spacing:.08em}
+
+  /* --- teal-accent voor nadruk --- */
+  .ev.now{background:linear-gradient(90deg,rgba(86,240,220,.16),transparent)}
+  .ev.now .t,.ev.now .n{color:var(--teal);text-shadow:var(--tglow)}
+  .ev.now::before{background:var(--teal)!important;box-shadow:var(--tglow)!important}
+  .tag{background:var(--teal)!important}
+  .p2k.new .tm,.p2k.new .tx{color:var(--teal);text-shadow:var(--tglow)}
+  .p2k.new .pic{background:var(--teal);box-shadow:var(--tglow)}
+  .p2k.new .pic{animation:blink 1s infinite steps(1)}
+
+  /* --- pictogrammen: eigen set, afgerond vierkant, symbool uitgespaard --- */
+  .pic{display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;border-radius:.22em;
+       background:var(--txt);box-shadow:0 0 6px rgba(141,255,154,.5);vertical-align:-.2em;margin-right:.35em;flex:0 0 auto}
+  .pic svg{width:78%;height:78%;fill:#010601;stroke:#010601;stroke-width:0}
+  .pic.ln svg{fill:none;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+  .p2k .pic{font-size:24px;margin-right:8px}
+  .ev .pic{font-size:22px}
+  .ev .n{display:flex;align-items:flex-start;gap:0}
+  .ev .n .pic{margin-top:4px}
+  .p2k .tg{display:none}
+  /* weer-iconen in een omlijnd vierkant */
+  .wicon{border:2px solid var(--line);border-radius:14px;width:104px;height:104px;display:flex;align-items:center;justify-content:center}
+  .fd .i .ico{border:2px solid rgba(141,255,154,.35);border-radius:.18em;padding:.08em}
+
+  /* --- weer: kompas + grafiek --- */
+  .wnow{grid-template-columns:auto 1fr auto!important}
+  .wnow .compass{grid-row:span 2;width:104px;height:104px}
+  .compass text{font-family:var(--mono);font-size:15px;fill:var(--dim);text-anchor:middle;dominant-baseline:central}
+  .compass .ring{fill:none;stroke:var(--line);stroke-width:2}
+  .compass .tick{stroke:var(--dim);stroke-width:2}
+  .compass .needle{fill:var(--txt);filter:drop-shadow(0 0 4px rgba(141,255,154,.8))}
+  .compass .tail{fill:none;stroke:var(--txt);stroke-width:2}
+  .compass .bft{font-size:20px;fill:var(--txt)}
+  .wstats{grid-template-columns:repeat(3,1fr)}
+  #wgraph{flex:1;min-height:150px;margin-top:12px;border-top:2px dashed var(--line);padding-top:6px}
+  #wgraph svg{width:100%;height:100%;overflow:visible}
+  #wgraph .grid{stroke:rgba(141,255,154,.14);stroke-width:1}
+  #wgraph .line{fill:none;stroke:var(--txt);stroke-width:3;filter:drop-shadow(0 0 4px rgba(141,255,154,.7))}
+  #wgraph .pt{fill:#010601;stroke:var(--txt);stroke-width:2.5}
+  #wgraph .pt.now{fill:var(--teal);stroke:var(--teal)}
+  #wgraph .pbar{fill:rgba(86,240,220,.55)}
+  #wgraph text{font-family:var(--mono);fill:var(--dim);font-size:19px;text-anchor:middle}
+  #wgraph text.tv{fill:var(--txt);font-size:22px}
+  #wgraph text.pv{fill:var(--teal);font-size:16px}
+  #stage.short #wgraph{min-height:120px}
+
+  /* --- glitch (willekeurig, 2-8 s) --- */
+  #glitch{position:absolute;inset:0;pointer-events:none;z-index:60;display:none;overflow:hidden}
+  #glitch canvas{position:absolute;inset:0;width:100%;height:100%;opacity:.17;mix-blend-mode:screen;image-rendering:pixelated}
+  #glitch .band{position:absolute;left:0;right:0;height:90px;background:linear-gradient(transparent,rgba(141,255,154,.13) 40%,rgba(255,255,255,.08) 50%,rgba(141,255,154,.13) 60%,transparent);
+    animation:band 1.7s linear infinite}
+  #glitch .tear{position:absolute;left:0;right:0;height:14px;background:rgba(141,255,154,.10);box-shadow:0 0 0 1px rgba(141,255,154,.06)}
+  @keyframes band{from{top:-100px}to{top:100%}}
+  #stage.glitching #glitch{display:block}
+  #stage.glitching > header,#stage.glitching > main,#stage.glitching > footer{animation:jit .18s infinite steps(2)}
+  #stage.glitching.hard > header,#stage.glitching.hard > main,#stage.glitching.hard > footer{animation:jit2 .11s infinite steps(2)}
+  @keyframes jit{0%{transform:translate(0,0)}50%{transform:translate(-3px,1px)}100%{transform:translate(2px,0)}}
+  @keyframes jit2{0%{transform:translate(0,0) skewX(0)}50%{transform:translate(-9px,2px) skewX(-1.2deg);filter:brightness(1.35)}100%{transform:translate(6px,-1px)}}
+
+  /* --- opstartscherm --- */
+  #boot{position:absolute;inset:0;z-index:80;background:#010601;padding:70px 90px;font-family:var(--mono);font-size:30px;line-height:1.35;
+        color:var(--txt);text-shadow:var(--glow);white-space:pre-wrap;overflow:hidden;transition:opacity .6s}
+  #boot.gone{opacity:0;pointer-events:none}
+  #boot .h{font-family:var(--serif);font-weight:700;font-size:54px;display:inline-block;transform:scaleX(1.4);transform-origin:left;letter-spacing:.12em;margin-bottom:10px}
+  #boot .ok{color:var(--teal);text-shadow:var(--tglow)}
+  #boot .warn{color:#ffb347}
+  #boot .cur{display:inline-block;width:.55em;height:1em;background:var(--txt);vertical-align:-3px;animation:blink 1s infinite steps(1)}
+  #boot .mbar{display:inline-block;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -355,6 +446,7 @@
         <div class="wnow">
           <div class="wicon" id="wicon">◌</div>
           <div class="wtemp"><span id="wtemp">--</span><sup>°C</sup></div>
+          <svg class="compass" id="compass" viewBox="0 0 120 120"></svg>
           <div class="wdesc" id="wdesc">VERBINDEN…</div>
         </div>
         <div class="wstats">
@@ -362,7 +454,7 @@
           <div class="stat"><i>WIND</i><b id="wwind">--</b></div>
           <div class="stat"><i>VOCHT</i><b id="whum">--%</b></div>
         </div>
-        <div class="hours" id="hours"></div>
+        <div id="wgraph"></div>
       </section>
     </div>
 
@@ -397,7 +489,9 @@
   </main>
 
   <footer><span class="lbl">FEED</span><div class="tick" id="tick">SYSTEEM OPSTARTEN…</div></footer>
+  <div id="glitch"><canvas id="gnoise" width="320" height="192"></canvas><div class="band"></div></div>
   <div id="fx"></div>
+  <div id="boot"></div>
 </div>
 
 <div id="settings">
@@ -469,7 +563,8 @@ function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.ge
 function tickClock(){
   const d = new Date();
   $('hm').textContent = hhmm(d); $('ss').textContent = pad(d.getSeconds());
-  $('date').textContent = `${DAGEN[d.getDay()]} ${d.getDate()} ${MAANDEN[d.getMonth()]} ${d.getFullYear()}`;
+  const ds = `${DAGEN[d.getDay()]} ${d.getDate()} ${MAANDEN[d.getMonth()]} ${d.getFullYear()}`;
+  if($('date').dataset.v!==ds){ $('date').dataset.v=ds; $('date').innerHTML=`<span class="ser">${ds}</span>`; }
   $('week').textContent = pad(isoWeek(d));
   $('doy').textContent = String(Math.floor((d - new Date(d.getFullYear(),0,0))/864e5)).padStart(3,'0');
 }
@@ -525,13 +620,8 @@ function renderWeather(){
   $('wwind').textContent = `${WINDR[Math.round(c.wind_direction_10m/22.5)%16]} ${bft(c.wind_speed_10m)}`;
   $('wupd').textContent = 'UPD '+hhmm(new Date());
 
-  // komende 8 uur
-  const h = WEATHER.hourly, now = new Date(); let i = h.time.findIndex(t => new Date(t) >= now); if(i<0) i=0;
-  $('hours').innerHTML = h.time.slice(i, i+8).map((t,k) => {
-    const j=i+k, p=h.precipitation_probability[j]??0;
-    return `<div><div>${pad(new Date(t).getHours())}u</div><div class="hi">${glyph(wmo(h.weather_code[j])[0])}</div>
-      <div class="ht">${Math.round(h.temperature_2m[j])}°</div><div class="bar"><span style="height:${Math.max(3,p*0.4)}px"></span></div><div class="hp">${p}%</div></div>`;
-  }).join('');
+  drawCompass(c.wind_direction_10m, c.wind_speed_10m);
+  drawWeatherGraph();
 
   // 5 dagen (vanaf morgen)
   const d = WEATHER.daily;
@@ -543,6 +633,71 @@ function renderWeather(){
   $('sunrise').textContent=hhmm(sr); $('sunset').textContent=hhmm(ss); $('daylen').textContent=`${Math.floor(mins/60)}u${pad(mins%60)}`;
   buildTicker();
 }
+
+/* ===== kompas: wijzer wijst waar de wind VANDAAN komt ===== */
+function drawCompass(dir, kmh){
+  const cx=60, cy=60, r=40, a=(dir-90)*Math.PI/180;
+  const tip=[cx+Math.cos(a)*34, cy+Math.sin(a)*34], b1=[cx+Math.cos(a+2.6)*14, cy+Math.sin(a+2.6)*14], b2=[cx+Math.cos(a-2.6)*14, cy+Math.sin(a-2.6)*14];
+  const tail=[cx-Math.cos(a)*26, cy-Math.sin(a)*26];
+  let ticks=''; for(let k=0;k<16;k++){ const t=k*Math.PI/8, l=k%4===0?9:4; ticks+=`<line class="tick" x1="${cx+Math.cos(t)*r}" y1="${cy+Math.sin(t)*r}" x2="${cx+Math.cos(t)*(r-l)}" y2="${cy+Math.sin(t)*(r-l)}"/>`; }
+  $('compass').innerHTML = `<circle class="ring" cx="60" cy="60" r="${r}"/>${ticks}
+    <text x="60" y="${60-r-10}">N</text><text x="${60+r+10}" y="60">O</text><text x="60" y="${60+r+10}">Z</text><text x="${60-r-10}" y="60">W</text>
+    <line class="tail" x1="${cx}" y1="${cy}" x2="${tail[0]}" y2="${tail[1]}"/>
+    <polygon class="needle" points="${tip.join(',')} ${b1.join(',')} ${b2.join(',')}"/>
+    <circle cx="60" cy="60" r="3.5" fill="var(--txt)"/>`;
+}
+
+/* ===== uurverwachting als grafiek: temperatuurlijn + neerslagstaafjes ===== */
+function drawWeatherGraph(){
+  if(!WEATHER) return;
+  const el=$('wgraph'); const W=el.clientWidth||440, H=el.clientHeight||180;
+  const h=WEATHER.hourly, now=new Date(); let i=h.time.findIndex(t=>new Date(t)>=now); if(i<0) i=0; i=Math.max(0,i-1);
+  const N=12, T=h.temperature_2m.slice(i,i+N), P=h.precipitation_probability.slice(i,i+N), tm=h.time.slice(i,i+N);
+  const top=30, bot=H-78, padx=20, step=(W-2*padx)/(N-1), bbase=H-26, bmax=30;
+  const mn=Math.floor(Math.min(...T))-1, mx=Math.ceil(Math.max(...T))+1;
+  const y=v=>top+(bot-top)*(1-(v-mn)/Math.max(1,mx-mn)), x=k=>padx+k*step;
+  let g=''; for(let k=0;k<=3;k++){ const yy=top+(bot-top)*k/3; g+=`<line class="grid" x1="${padx}" y1="${yy}" x2="${W-padx}" y2="${yy}"/>`; }
+  g+=`<line class="grid" x1="${padx}" y1="${bbase}" x2="${W-padx}" y2="${bbase}"/>`;
+  const pts=T.map((v,k)=>`${x(k)},${y(v)}`).join(' ');
+  let bars='', labels='', dots='';
+  T.forEach((v,k)=>{
+    const p=P[k]??0, bh=Math.max(1.5,p/100*bmax);
+    bars+=`<rect class="pbar" x="${x(k)-7}" y="${bbase-bh}" width="14" height="${bh}"/>`;
+    const nowPt = k===1;
+    dots+=`<circle class="pt ${nowPt?'now':''}" cx="${x(k)}" cy="${y(v)}" r="${nowPt?6:4.5}"/>`;
+    if(k%2===1){ labels+=`<text class="tv" x="${x(k)}" y="${y(v)-12}">${Math.round(v)}°</text>`;
+                 labels+=`<text x="${x(k)}" y="${H-4}">${pad(new Date(tm[k]).getHours())}u</text>`;
+                 if(p>=10) labels+=`<text class="pv" x="${x(k)}" y="${bbase-bh-5}">${p}%</text>`; }
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${g}${bars}<polyline class="line" points="${pts}"/>${dots}${labels}</svg>`;
+}
+
+/* ===== eigen pictogrammen (afgerond vierkant, symbool uitgespaard) ===== */
+const PIC = {
+  AMBU:  '<svg viewBox="0 0 64 64"><path d="M25 8h14v17h17v14H39v17H25V39H8V25h17z"/></svg>',
+  BRW:   '<svg viewBox="0 0 64 64"><path d="M33 4c3 12 17 18 17 34a18 18 0 0 1-36 0c0-9 5-14 9-19 0 7 3 11 7 12-3-9 0-19 3-27z"/></svg>',
+  POL:   '<svg viewBox="0 0 64 64"><path d="M32 4l24 9v15c0 16-10 27-24 32C18 55 8 44 8 28V13z"/></svg>',
+  HELI:  '<svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="5"/><rect x="29" y="14" width="6" height="8"/><path d="M14 30c0-5 6-8 16-8h6c8 0 12 5 12 11s-4 11-12 11H24c-6 0-10-4-10-9z"/><rect x="46" y="30" width="14" height="4"/><rect x="20" y="48" width="26" height="4"/></svg>',
+  KNRM:  '<svg viewBox="0 0 64 64"><path d="M29 6h6v8h8v6h-8v28c7-1 12-6 13-12h-6l9-9 9 9h-6c-2 12-11 20-23 20S10 48 8 36H2l9-9 9 9h-6c1 6 6 11 13 12V20h-8v-6h8z"/></svg>',
+  CAL:   '<svg viewBox="0 0 64 64"><path d="M8 14h48v42H8z M14 26v24h36V26z"/><rect x="16" y="6" width="6" height="12"/><rect x="42" y="6" width="6" height="12"/><rect x="20" y="32" width="10" height="8"/></svg>',
+  CLOCK: '<svg viewBox="0 0 64 64"><path d="M32 4a28 28 0 1 1 0 56 28 28 0 0 1 0-56zm0 8a20 20 0 1 0 0 40 20 20 0 0 0 0-40zM29 18h6v13l10 7-3 5-13-9z"/></svg>',
+  CAKE:  '<svg viewBox="0 0 64 64"><rect x="10" y="32" width="44" height="24"/><rect x="18" y="20" width="5" height="12"/><rect x="30" y="20" width="5" height="12"/><rect x="42" y="20" width="5" height="12"/><path d="M20 8c3 4 3 7 0 9-3-2-3-5 0-9zM32 8c3 4 3 7 0 9-3-2-3-5 0-9zM44 8c3 4 3 7 0 9-3-2-3-5 0-9z"/></svg>',
+  SPORT: '<svg viewBox="0 0 64 64"><rect x="4" y="22" width="8" height="20"/><rect x="12" y="16" width="8" height="32"/><rect x="20" y="29" width="24" height="6"/><rect x="44" y="16" width="8" height="32"/><rect x="52" y="22" width="8" height="20"/></svg>',
+  STUDY: '<svg viewBox="0 0 64 64"><path d="M4 22l28-12 28 12-28 12z"/><path d="M14 30v14c6 6 30 6 36 0V30l-18 8z"/><rect x="54" y="24" width="4" height="20"/></svg>',
+  WORK:  '<svg viewBox="0 0 64 64"><path d="M24 10h16v8h18v36H6V18h18zm6 6v2h4v-2z"/></svg>',
+  HELM:  '<svg viewBox="0 0 64 64"><path d="M8 40c0-16 11-28 24-28s24 12 24 28H8z"/><rect x="4" y="40" width="56" height="7"/></svg>',
+  HEART: '<svg viewBox="0 0 64 64"><path d="M32 56L10 34C2 26 6 12 18 12c6 0 10 4 14 9 4-5 8-9 14-9 12 0 16 14 8 22z"/></svg>'
+};
+const pic = k => `<span class="pic">${PIC[k]||PIC.CLOCK}</span>`;
+const AG_RULES = [
+  [/verjaardag|jarig|birthday|jubileum|annie?vers/i,'CAKE'],
+  [/sport|training|tango|dans|fitness|hardlop|zwem|gym/i,'SPORT'],
+  [/cursus|\bles\b|school|studie|engeland/i,'STUDY'],
+  [/reenact|726|vgd|volksgren|re-enact/i,'HELM'],
+  [/werk|satcom|meeting|overleg|kantoor|dienst/i,'WORK'],
+  [/date|liefde|❤|♥/i,'HEART']
+];
+function agIcon(ev){ for(const [re,k] of AG_RULES) if(re.test(ev.title)) return k; return ev.allDay ? 'CAL' : 'CLOCK'; }
 
 /* ===== agenda (via server.py) ===== */
 async function loadAgenda(){
@@ -572,13 +727,13 @@ function renderAgenda(){
   $('agendaList').innerHTML = list.map(g => {
     const diff = Math.round((g.date - today)/864e5);
     const label = diff===0 ? 'VANDAAG' : diff===1 ? 'MORGEN' : DAGEN[g.date.getDay()].toUpperCase();
-    return `<div class="day"><div class="dayhead">${label}<small>${g.date.getDate()} ${MAANDEN[g.date.getMonth()].slice(0,3).toUpperCase()}</small></div>` +
+    return `<div class="day"><div class="dayhead"><span class="ser">${label}</span><small>${g.date.getDate()} ${MAANDEN[g.date.getMonth()].slice(0,3).toUpperCase()}</small></div>` +
       g.items.map(ev => {
         const s=new Date(ev.start), e=new Date(ev.end);
         const isNow = !ev.allDay && s<=now && e>now, past = !ev.allDay && e<=now;
         const time = ev.allDay ? 'HELE DAG' : hhmm(s)+'–'+hhmm(e);
         return `<div class="ev ${isNow?'now':''} ${past?'past':''}" style="--c:${ev.color}"><div class="t">${time}</div>
-          <div><div class="n">${esc(ev.title)}${isNow?'<span class="tag">NU</span>':''}</div>${ev.location?`<div class="l">⌖ ${esc(ev.location)}</div>`:''}</div></div>`;
+          <div><div class="n">${pic(agIcon(ev))}<span>${esc(ev.title)}${isNow?'<span class="tag">NU</span>':''}</span></div>${ev.location?`<div class="l">⌖ ${esc(ev.location)}</div>`:''}</div></div>`;
       }).join('') + '</div>';
   }).join('') + errHtml();
   buildTicker();
@@ -610,7 +765,7 @@ function renderP2000(){
     // tekst zonder "naar <plaats>" aan het eind; plaats staat eronder
     const txt = it.text.replace(/\s+(naar|in|te|op)\s+[^,]+$/i,'') || it.text;
     return `<div class="p2k ${mins<15?'new':''}"><div class="tm">${hhmm(t)}<small>${ago}</small></div>
-      <div><div class="tx"><span class="tg">${p2kType(it)}</span>${esc(txt)}</div><div class="ct">⌖ ${esc(cityName(it.city))}</div></div></div>`;
+      <div><div class="tx">${pic(p2kType(it))}${esc(txt)}</div><div class="ct">⌖ ${esc(cityName(it.city))}</div></div></div>`;
   }).join('');
 }
 
@@ -648,31 +803,88 @@ function buildTicker(){
 
 /* ===== start ===== */
 (function boot(){
-  const t = CFG.title || 'VIKING//OS'; $('logo').dataset.t = t; const [x,y] = t.split('//');
-  $('logo').innerHTML = y!==undefined ? `${esc(x)}<span>//</span>${esc(y)}` : esc(t); document.title = t;
+  const t = CFG.title || 'VIKING//OS'; $('logo').dataset.t = t; document.title = t;
+  $('logo').innerHTML = `<span class="ser">${esc(t)}</span>`;
+  // titels van de panelen: systeemtekst in uitgerekte serif, data blijft pixelfont
+  document.querySelectorAll('.ptitle').forEach(pt=>{ const n=pt.firstChild; if(n && n.nodeType===3 && n.textContent.trim()){ const sp=document.createElement('span'); sp.className='ser'; sp.textContent=n.textContent.trim(); pt.replaceChild(sp,n); } });
   $('loc').textContent = CFG.locName.toUpperCase();
   setupDoorbell();
-  loadWeather(); loadAgenda(); loadP2000();
+  const pW = loadWeather(), pA = loadAgenda(), pP = loadP2000();
+  runBoot({pW,pA,pP});
   setInterval(loadP2000, 2*60*1000);
   setInterval(()=>{ if(P2K) renderP2000(); }, 60*1000);
   setInterval(loadWeather, 15*60*1000);
   setInterval(loadAgenda, 5*60*1000);
   setInterval(()=>{ if(AGENDA) renderAgenda(); }, 60*1000);   // "NU"-markering bijwerken
+  addEventListener('resize', ()=>{ if(WEATHER) drawWeatherGraph(); });
   addEventListener('online',()=>{ setOnline(true); loadWeather(); loadAgenda(); });
   addEventListener('offline',()=>setOnline(false));
   keepAwake();
+  scheduleGlitch();
   if(!CFG.agendaUrl) openSettings();
 })();
 
+/* ===== opstartscherm (10+ s; overgeslagen na automatische update) ===== */
+async function runBoot(p){
+  const el=$('boot');
+  let skip=false; try{ skip = sessionStorage.getItem('vos-skipboot')==='1'; sessionStorage.removeItem('vos-skipboot'); }catch(e){}
+  if(skip){ el.remove(); return; }
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const settle=(pr,ms)=>Promise.race([pr.then(()=>true,()=>false), sleep(ms).then(()=>false)]);
+  let html='';
+  const out=()=>{ el.innerHTML=html+'<span class="cur"></span>'; };
+  async function type(txt, cls, speed=22){ const open=cls?`<span class="${cls}">`:'', close=cls?'</span>':'';
+    for(let k=1;k<=txt.length;k++){ el.innerHTML=html+open+esc(txt.slice(0,k))+close+'<span class="cur"></span>'; await sleep(speed); }
+    html+=open+esc(txt)+close; out(); }
+  const nl=async (ms=120)=>{ html+='\n'; out(); await sleep(ms); };
+  async function check(label, pr, okTxt='OK'){ await type(label.padEnd(34,'.'),null,14); await sleep(250);
+    const ok = await settle(pr, 4000); await type(ok?` ${okTxt}`:' GEEN RESPONS', ok?'ok':'warn', 30); await nl(260); }
+  const id = 'NODE 0726 · ' + (CFG.locName||'AMERONGEN').toUpperCase();
+  html='<span class="h">'+esc(CFG.title||'VIKING//OS')+'</span>\n'; out(); await sleep(700);
+  await type('INTERFACE 2037 · HUISSYSTEEM · '+id); await nl(500);
+  await type('ROM CHECKSUM ......................... 7F3A-0C19'); await nl(220);
+  await type('GEHEUGEN '); for(let k=0;k<=16;k++){ el.innerHTML=html+`<span class="mbar">${'█'.repeat(k)}${'░'.repeat(16-k)}</span> ${k*4096} KB`+'<span class="cur"></span>'; await sleep(70); }
+  html+=`<span class="mbar">${'█'.repeat(16)}</span> 65536 KB <span class="ok">OK</span>`; await nl(400);
+  await type('TIJDBASIS SYNCHRONISEREN'.padEnd(34,'.'),null,14); await type(' '+hhmm(new Date())+' CET','ok',30); await nl(300);
+  await check('VERBINDING WEERSTATION', p.pW);
+  await check('VERBINDING AGENDA', p.pA);
+  await check('P2000-ONTVANGER  ±15 KM', p.pP);
+  await type('SCANLIJNEN KALIBREREN'.padEnd(34,'.'),null,14); await sleep(500); await type(' OK','ok',30); await nl(300);
+  await nl(200);
+  await type('ALLE SYSTEMEN NOMINAAL. INTERFACE WORDT GEOPEND', null, 30);
+  for(let k=0;k<3;k++){ await sleep(380); html+='.'; out(); }
+  await sleep(900);
+  el.classList.add('gone'); setTimeout(()=>el.remove(), 700);
+}
+
+/* ===== willekeurige beeldstoring: elke 30-120 s, 2-8 s lang ===== */
+function rnd(a,b){ return a+Math.random()*(b-a); }
+function scheduleGlitch(){ setTimeout(runGlitch, rnd(30,120)*1000); }
+function runGlitch(){
+  const st=$('stage'), g=$('glitch'), cv=$('gnoise'), cx=cv.getContext('2d'), img=cx.createImageData(cv.width,cv.height);
+  const dur=rnd(2,8)*1000, t0=performance.now();
+  g.querySelectorAll('.tear').forEach(n=>n.remove());
+  st.classList.add('glitching');
+  (function frame(){
+    const t=performance.now()-t0; if(t>dur){ st.classList.remove('glitching','hard'); g.querySelectorAll('.tear').forEach(n=>n.remove()); scheduleGlitch(); return; }
+    for(let i=0;i<img.data.length;i+=4){ const v=Math.random()<.5?0:Math.random()*255; img.data[i]=v*.55; img.data[i+1]=v; img.data[i+2]=v*.7; img.data[i+3]=255; }
+    cx.putImageData(img,0,0);
+    st.classList.toggle('hard', Math.random()<0.18);   // korte harde rukken
+    if(Math.random()<0.35){ g.querySelectorAll('.tear').forEach(n=>n.remove());
+      for(let k=0,n=1+Math.floor(Math.random()*3);k<n;k++){ const d=document.createElement('div'); d.className='tear'; d.style.top=rnd(0,100)+'%'; d.style.height=rnd(4,22)+'px'; d.style.transform=`translateX(${rnd(-30,30)}px)`; g.appendChild(d); } }
+    setTimeout(()=>requestAnimationFrame(frame), 70);
+  })();
+}
+
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.4';
+const VERSION = '2026-11-14.5';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) return;
     const v = (await r.json()).version;
-    if(v && v !== VERSION) location.reload();
+    if(v && v !== VERSION){ try{ sessionStorage.setItem('vos-skipboot','1'); }catch(e){} location.reload(); }
   }catch(e){}
 }
 if(location.protocol.startsWith('http')) setInterval(checkUpdate, 10*60*1000);
