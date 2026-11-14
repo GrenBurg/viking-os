@@ -543,7 +543,7 @@
 <div id="settings">
   <div class="sbox">
     <div class="ptitle">// INSTELLINGEN</div>
-    <label>Agenda-adres (Google Apps Script, met ?token=…)<input id="setAgenda" placeholder="https://script.google.com/macros/s/…/exec?token=…" autocomplete="off" spellcheck="false"></label>
+    <label>Agenda-code (of volledig agenda-adres)<input id="setAgenda" placeholder="geheime code" autocomplete="off" spellcheck="false"></label>
     <label>Deurbel-stream (optioneel, leeg = verbergen)<input id="setDoor" placeholder="http://192.168.1.x:1984/stream.html?src=deurbel" autocomplete="off" spellcheck="false"></label>
     <div class="row3">
       <label>Plaats<input id="setLoc"></label>
@@ -589,8 +589,12 @@ const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
    Wat je later via het instellingenscherm (5x op logo tikken)
    opslaat, gaat hiervoor.
    ================================================================ */
+// Adres van het Google-script. Niet geheim: zonder de geheime code geeft het niets terug.
+const AGENDA_BASE = 'https://script.google.com/macros/s/AKfycbycjBR2xMOluSLu0DnaONDN0KQLsXnybZIpYVww3Vl0wFRHOxr6Y-QnqIkjfT7-QzCAOw/exec';
+const codeToUrl = v => { v=(v||'').trim(); return !v || /^https?:/i.test(v) ? v : AGENDA_BASE+'?token='+encodeURIComponent(v); };
+const urlToCode = v => { const m=(v||'').match(/^(.*\/exec)\?token=([^&]+)$/); return m && m[1]===AGENDA_BASE ? decodeURIComponent(m[2]) : (v||''); };
 const PRESET = {
-  agendaUrl:   '',   // niet hier invullen (openbare repo): instellen via #agenda=… of het instellingenmenu
+  agendaUrl:   '',   // niet hier invullen (openbare repo): instellen via #code=… of het instellingenmenu
   doorbellUrl: '',            // leeg = deurbelvak verbergen
   locName:     'Amerongen',
   lat:         52.0033,
@@ -606,8 +610,9 @@ let CFG = loadCfg(), WEATHER = null, AGENDA = null, online = true;
 (function(){ try{
   const h = new URLSearchParams(location.hash.slice(1));
   if(h.get('agenda')){ CFG.agendaUrl = h.get('agenda'); saveCfg(CFG); }
+  if(h.get('code')){ CFG.agendaUrl = codeToUrl(h.get('code')); saveCfg(CFG); }
   if(h.get('door')){ CFG.doorbellUrl = h.get('door'); saveCfg(CFG); }
-  if(h.get('agenda')||h.get('door')) history.replaceState(null,'',location.pathname+location.search); // geheim adres niet in de adresbalk laten staan
+  if(h.get('agenda')||h.get('code')||h.get('door')) history.replaceState(null,'',location.pathname+location.search); // geheim adres niet in de adresbalk laten staan
 }catch(e){} })();
 
 /* ===== klok ===== */
@@ -994,7 +999,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.19';
+const VERSION = '2026-11-14.20';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
@@ -1017,14 +1022,14 @@ document.addEventListener('click', ()=>{ if(!wakeLock || wakeLock.released) keep
 let taps=0, tapT=0;
 $('logo').addEventListener('click', ()=>{ const n=Date.now(); taps = (n-tapT<800) ? taps+1 : 1; tapT=n; if(taps>=5){ taps=0; openSettings(); } });
 function openSettings(){
-  $('setAgenda').value = CFG.agendaUrl; $('setDoor').value = CFG.doorbellUrl; $('setTitle').value = CFG.title;
+  $('setAgenda').value = urlToCode(CFG.agendaUrl); $('setDoor').value = CFG.doorbellUrl; $('setTitle').value = CFG.title;
   $('setLoc').value = CFG.locName; $('setLat').value = CFG.lat; $('setLon').value = CFG.lon;
   $('scrinfo').textContent = `SCHERM: ${innerWidth}×${innerHeight} · DPR ${devicePixelRatio} · ${screen.width}×${screen.height}`;
   $('settings').classList.add('open');
 }
 $('setSave').addEventListener('click', ()=>{
   const c = Object.assign({}, CFG, {
-    agendaUrl: $('setAgenda').value.trim(), doorbellUrl: $('setDoor').value.trim(), title: $('setTitle').value.trim() || DEFAULTS.title,
+    agendaUrl: codeToUrl($('setAgenda').value), doorbellUrl: $('setDoor').value.trim(), title: $('setTitle').value.trim() || DEFAULTS.title,
     locName: $('setLoc').value.trim() || DEFAULTS.locName, lat: parseFloat($('setLat').value) || DEFAULTS.lat, lon: parseFloat($('setLon').value) || DEFAULTS.lon });
   saveCfg(c); CFG = c; if(localStorage.getItem('vikingos')) location.reload(); else { $('settings').classList.remove('open'); loadAgenda(); loadWeather(); }
 });
