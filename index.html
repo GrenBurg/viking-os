@@ -12,6 +12,7 @@
   /* lettertypes in de repo zelf (OFL), zodat ze altijd laden */
   @font-face{font-family:'VOS Data';src:url(fonts/dotgothic16-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:82%}
   @font-face{font-family:'VOS Titel';src:url(fonts/arvo-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:88%}
+  .emo{filter:grayscale(1) brightness(1.15) sepia(1) hue-rotate(68deg) saturate(4.5) drop-shadow(0 0 3px rgba(141,255,154,.7));font-family:'Noto Emoji',sans-serif}
 </style>
 <style>
   :root{
@@ -700,6 +701,9 @@ const AG_RULES = [
   [/werk|satcom|meeting|overleg|kantoor|dienst/i,'WORK'],
   [/date|liefde|❤|♥/i,'HEART']
 ];
+// emoji in titels (bijv. een hartje) niet in kleur maar in fosforgroen
+const EMO_RE = /(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)/gu;
+const mono = t => t.replace(EMO_RE, '<span class="emo">$1</span>');
 function agIcon(ev){ for(const [re,k] of AG_RULES) if(re.test(ev.title)) return k; return ev.allDay ? 'CAL' : 'CLOCK'; }
 
 /* ===== agenda (via server.py) ===== */
@@ -736,7 +740,7 @@ function renderAgenda(){
         const isNow = !ev.allDay && s<=now && e>now, past = !ev.allDay && e<=now;
         const time = ev.allDay ? 'HELE DAG' : hhmm(s)+'–'+hhmm(e);
         return `<div class="ev ${isNow?'now':''} ${past?'past':''}" style="--c:${ev.color}"><div class="t">${time}</div>
-          <div><div class="n">${pic(agIcon(ev))}<span>${esc(ev.title)}${isNow?'<span class="tag">NU</span>':''}</span></div>${ev.location?`<div class="l">⌖ ${esc(ev.location)}</div>`:''}</div></div>`;
+          <div><div class="n">${pic(agIcon(ev))}<span>${mono(esc(ev.title))}${isNow?'<span class="tag">NU</span>':''}</span></div>${ev.location?`<div class="l">⌖ ${esc(ev.location)}</div>`:''}</div></div>`;
       }).join('') + '</div>';
   }).join('') + errHtml();
   buildTicker();
@@ -881,7 +885,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.7';
+const VERSION = '2026-11-14.8';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
