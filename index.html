@@ -45,6 +45,12 @@
   #p2000{min-height:0;display:flex;flex-direction:column}
   .ptitle{gap:14px}
   .ptitle small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  /* daglicht onder week/dag in het tijdpaneel */
+  #sunrow{display:flex;justify-content:space-between;gap:12px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(141,255,154,.3);
+          font-size:22px;letter-spacing:1px;color:var(--dim);white-space:nowrap}
+  #sunrow b{color:var(--txt);font-weight:400}
+  #clock{padding-bottom:14px}
+  #forecast .days{margin-bottom:4px}
 </style>
 <style>
   :root{
@@ -476,6 +482,7 @@
         <div class="time"><span id="hm">--:--</span><span class="sec" id="ss">--</span></div>
         <div class="date" id="date">—</div>
         <div class="meta">WEEK <b id="week">--</b> &nbsp;·&nbsp; DAG <b id="doy">---</b> VAN HET JAAR</div>
+        <div class="sun" id="sunrow"><span>☀ OP <b id="sunrise">--:--</b></span><span>ONDER <b id="sunset">--:--</b></span><span>DAGLICHT <b id="daylen">--</b></span></div>
       </section>
 
       <section class="panel" id="weather">
@@ -520,7 +527,6 @@
       <section class="panel" id="forecast">
         <div class="ptitle">// VOORUITZICHT <small>5 DAGEN</small></div>
         <div class="days" id="days"></div>
-        <div class="sun"><span>OP <b id="sunrise">--:--</b></span><span>ONDER <b id="sunset">--:--</b></span><span>DAGLICHT <b id="daylen">--</b></span></div>
       </section>
     </div>
   </main>
@@ -962,7 +968,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.14';
+const VERSION = '2026-11-14.15';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
