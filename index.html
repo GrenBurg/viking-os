@@ -590,7 +590,7 @@ const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
    opslaat, gaat hiervoor.
    ================================================================ */
 const PRESET = {
-  agendaUrl:   'https://script.google.com/macros/s/AKfycbycjBR2xMOluSLu0DnaONDN0KQLsXnybZIpYVww3Vl0wFRHOxr6Y-QnqIkjfT7-QzCAOw/exec?token=Wd-3jPk_E-er-HmuAdHvSJyegD_bmuuJ',   // TIJDELIJK vast ingesteld
+  agendaUrl:   '',   // niet hier invullen (openbare repo): instellen via #agenda=… of het instellingenmenu
   doorbellUrl: '',            // leeg = deurbelvak verbergen
   locName:     'Amerongen',
   lat:         52.0033,
@@ -607,6 +607,7 @@ let CFG = loadCfg(), WEATHER = null, AGENDA = null, online = true;
   const h = new URLSearchParams(location.hash.slice(1));
   if(h.get('agenda')){ CFG.agendaUrl = h.get('agenda'); saveCfg(CFG); }
   if(h.get('door')){ CFG.doorbellUrl = h.get('door'); saveCfg(CFG); }
+  if(h.get('agenda')||h.get('door')) history.replaceState(null,'',location.pathname+location.search); // geheim adres niet in de adresbalk laten staan
 }catch(e){} })();
 
 /* ===== klok ===== */
@@ -993,7 +994,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.18';
+const VERSION = '2026-11-14.19';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
