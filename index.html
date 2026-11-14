@@ -824,7 +824,7 @@ function buildTicker(){
   if(!CFG.agendaUrl) openSettings();
 })();
 
-/* ===== opstartscherm (10+ s; overgeslagen na automatische update) ===== */
+/* ===== opstartscherm (10+ s, ook na een automatische update) ===== */
 async function runBoot(p){
   const el=$('boot');
   let skip=false; try{ skip = sessionStorage.getItem('vos-skipboot')==='1'; sessionStorage.removeItem('vos-skipboot'); }catch(e){}
@@ -878,13 +878,13 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.5';
+const VERSION = '2026-11-14.6';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
     if(!r.ok) return;
     const v = (await r.json()).version;
-    if(v && v !== VERSION){ try{ sessionStorage.setItem('vos-skipboot','1'); }catch(e){} location.reload(); }
+    if(v && v !== VERSION) location.reload();   // na een update gewoon opnieuw opstarten, met opstartscherm
   }catch(e){}
 }
 if(location.protocol.startsWith('http')) setInterval(checkUpdate, 10*60*1000);
