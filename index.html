@@ -49,6 +49,9 @@
   #sunrow{display:flex;justify-content:space-between;gap:12px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(141,255,154,.3);
           font-size:22px;letter-spacing:1px;color:var(--dim);white-space:nowrap}
   #sunrow b{color:var(--txt);font-weight:400}
+  #sunrow{flex-wrap:wrap;row-gap:4px}
+  #sunrow > span:last-child{flex-basis:100%;display:flex;justify-content:space-between;align-items:baseline;font-size:22px}
+  #sunrow .cd{font-size:30px;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:1px}
   #clock{padding-bottom:14px}
   #forecast .days{margin-bottom:4px}
 </style>
@@ -482,7 +485,7 @@
         <div class="time"><span id="hm">--:--</span><span class="sec" id="ss">--</span></div>
         <div class="date" id="date">—</div>
         <div class="meta">WEEK <b id="week">--</b> &nbsp;·&nbsp; DAG <b id="doy">---</b> VAN HET JAAR</div>
-        <div class="sun" id="sunrow"><span>☀ OP <b id="sunrise">--:--</b></span><span>ONDER <b id="sunset">--:--</b></span><span>DAGLICHT <b id="daylen">--</b></span></div>
+        <div class="sun" id="sunrow"><span>☀ OP <b id="sunrise">--:--</b></span><span>ONDER <b id="sunset">--:--</b></span><span><i id="dlab" style="font-style:normal">DAGLICHT</i> <b id="daylen" class="cd">--</b></span></div>
       </section>
 
       <section class="panel" id="weather">
@@ -678,7 +681,7 @@ function renderWeather(){
       <div class="mx">${Math.round(d.temperature_2m_max[j])}°</div><div class="mn">${Math.round(d.temperature_2m_min[j])}°</div>
       <div class="p">NS ${d.precipitation_probability_max[j]??0}%</div></div>`; }).join('');
   const sr=new Date(d.sunrise[0]), ss=new Date(d.sunset[0]), mins=Math.round((ss-sr)/6e4);
-  $('sunrise').textContent=hhmm(sr); $('sunset').textContent=hhmm(ss); $('daylen').textContent=`${Math.floor(mins/60)}u${pad(mins%60)}`;
+  $('sunrise').textContent=hhmm(sr); $('sunset').textContent=hhmm(ss); SUNT = { rise: d.sunrise.map(t=>new Date(t)), set: d.sunset.map(t=>new Date(t)) }; tickDaylight();
   buildTicker();
 }
 
@@ -693,6 +696,22 @@ function fixSer(){
 let serT=null;
 new MutationObserver(()=>{ clearTimeout(serT); serT=setTimeout(fixSer,50); }).observe(document.getElementById('stage'),{childList:true,subtree:true});
 document.fonts && document.fonts.ready.then(fixSer);
+
+/* ===== daglicht: aftellen tot op 1/10 seconde ===== */
+let SUNT = null;
+function fmtCd(ms){ ms=Math.max(0,ms); const t=Math.floor(ms/100), ds=t%10, s=Math.floor(t/10)%60, m=Math.floor(t/600)%60, h=Math.floor(t/36000);
+  return `${h}:${pad(m)}:${pad(s)}.${ds}`; }
+function tickDaylight(){
+  if(!SUNT) return;
+  const now=new Date(), rise=SUNT.rise[0], set=SUNT.set[0], next=SUNT.rise.find(r=>r>now) || SUNT.rise[1];
+  let lab, ms;
+  if(now < rise){ lab='ZON OP OVER'; ms=rise-now; }
+  else if(now < set){ lab='DAGLICHT NOG'; ms=set-now; }
+  else { lab='ZON OP OVER'; ms=next-now; }
+  if($('dlab').textContent!==lab) $('dlab').textContent=lab;
+  $('daylen').textContent=fmtCd(ms);
+}
+setInterval(tickDaylight, 100);
 
 /* ===== kompas: wijzer wijst waar de wind VANDAAN komt ===== */
 function drawCompass(dir, kmh){
@@ -974,7 +993,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.16';
+const VERSION = '2026-11-14.17';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
