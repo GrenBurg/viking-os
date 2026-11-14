@@ -16,10 +16,11 @@
  */
 
 // Kies een lange, willekeurige code. Zonder deze code geeft het script niets terug.
-const TOKEN = 'VERANDER-MIJ-in-iets-lang-en-willekeurigs';
+const TOKEN = 'VERANDER-MIJ-in-iets-lang-en-willekeurigs';  // in je eigen Google-project staat de echte code
 
-// Leeg = alle agenda's die in Google Agenda aangevinkt staan.
-// Of noem specifieke agenda-ID's, bijv. ['jouw.adres@gmail.com', 'abc123@group.calendar.google.com']
+// Welke agenda's (op naam, hoofdletters maken niet uit). Leeg = alle aangevinkte agenda's.
+const CALENDAR_NAMES = ['Jurriris'];
+// Of specifieke agenda-ID's, bijv. ['abc123@group.calendar.google.com'] (gaat voor op namen)
 const CALENDARS = [];
 
 const MAX_DAYS = 31;
@@ -32,9 +33,17 @@ function doGet(e) {
   const start = new Date(); start.setHours(0, 0, 0, 0);
   const end = new Date(start.getTime() + days * 24 * 3600 * 1000);
 
+  const all = CalendarApp.getAllCalendars();
+  const wanted = CALENDAR_NAMES.map(n => n.trim().toLowerCase());
   const cals = CALENDARS.length
     ? CALENDARS.map(id => CalendarApp.getCalendarById(id)).filter(Boolean)
-    : CalendarApp.getAllCalendars().filter(c => c.isSelected() && !c.isHidden());
+    : wanted.length
+      ? all.filter(c => wanted.includes(c.getName().trim().toLowerCase()))
+      : all.filter(c => c.isSelected() && !c.isHidden());
+
+  if (!cals.length) {
+    return json_({ error: 'agenda niet gevonden. Beschikbaar: ' + all.map(c => c.getName()).join(', ') });
+  }
 
   const events = [], errors = [];
   cals.forEach(cal => {
