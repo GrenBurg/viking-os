@@ -8,8 +8,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Josefin+Slab:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* lettertypes in de repo zelf (OFL), zodat ze altijd laden */
+  @font-face{font-family:'VOS Data';src:url(fonts/dotgothic16-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:82%}
+  @font-face{font-family:'VOS Titel';src:url(fonts/arvo-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:88%}
+</style>
 <style>
   :root{
     --bg:#07060d; --bg2:#0d0b1a; --panel:rgba(14,12,30,.82);
@@ -188,7 +191,7 @@
     --bg:#010601; --bg2:#010601; --panel:transparent;
     --cyan:#8dff9a; --mag:#8dff9a; --yel:#c8ffcf; --grn:#8dff9a; --red:#ffb347;
     --txt:#8dff9a; --dim:#3d8a47; --line:rgba(141,255,154,.55);
-    --mono:'VT323','Share Tech Mono',monospace; --disp:'VT323','Share Tech Mono',monospace;
+    --mono:'VOS Data',ui-monospace,monospace; --disp:'VOS Data',ui-monospace,monospace;
     --glow:0 0 2px rgba(141,255,154,.9),0 0 8px rgba(141,255,154,.45),0 0 18px rgba(141,255,154,.18);
   }
   html,body{background:#000}
@@ -317,10 +320,10 @@
   #p2000{flex:0 0 auto}
   .p2k{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;padding:5px 0;border-bottom:1px dashed rgba(141,255,154,.25)}
   .p2k:last-child{border-bottom:0}
-  .p2k .tm{font-size:22px;line-height:1.1}
-  .p2k .tm small{display:block;font-size:16px;color:var(--dim)}
-  .p2k .tx{font-size:22px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .p2k .ct{font-size:17px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p2k .tm{font-size:25px;line-height:1.1}
+  .p2k .tm small{display:block;font-size:19px;color:var(--dim)}
+  .p2k .tx{font-size:25px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .p2k .ct{font-size:20px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .p2k .tg{display:inline-block;background:var(--txt);color:#010601;text-shadow:none;font-size:16px;padding:0 5px;margin-right:6px;vertical-align:2px}
   .p2k.new .tg{animation:blink 1s infinite steps(1)}
   #stage.short .p2k{padding:3px 0}
@@ -333,7 +336,7 @@
      v2026-11-14.5 — typografie, teal-accent, pictogrammen, weergrafiek,
      opstartscherm, glitches
      ===================================================================== */
-  :root{ --teal:#56f0dc; --serif:'Josefin Slab',Georgia,serif;
+  :root{ --teal:#56f0dc; --serif:'VOS Titel',Georgia,serif;
          --tglow:0 0 2px rgba(86,240,220,.9),0 0 9px rgba(86,240,220,.5),0 0 20px rgba(86,240,220,.2); }
 
   /* minder beeldbolling: zachter vignet, geen zware binnenschaduw */
@@ -343,10 +346,10 @@
     box-shadow:inset 0 0 50px 8px rgba(0,0,0,.55)}
 
   /* --- typografie in twee lagen: uitgerekte slab-serif voor systeemtitels --- */
-  .ser{display:inline-block;font-family:var(--serif);font-weight:600;transform:scaleX(1.32);transform-origin:left center;
+  .ser{display:inline-block;font-family:var(--serif);font-weight:400;transform:scaleX(1.32);transform-origin:left center;
        letter-spacing:.06em;white-space:nowrap}
   .ptitle .ser{font-size:.86em;text-transform:uppercase}
-  .logo{font-family:var(--serif);font-weight:700;font-size:50px;letter-spacing:.12em}
+  .logo{font-family:var(--serif);font-weight:400;font-size:50px;letter-spacing:.12em}
   .logo .ser{transform:scaleX(1.45)}
   #cursor{margin-left:150px}
   .date .ser{font-size:.86em;text-transform:uppercase;transform:scaleX(1.08)}
@@ -414,7 +417,7 @@
   #boot{position:absolute;inset:0;z-index:80;background:#010601;padding:70px 90px;font-family:var(--mono);font-size:30px;line-height:1.35;
         color:var(--txt);text-shadow:var(--glow);white-space:pre-wrap;overflow:hidden;transition:opacity .6s}
   #boot.gone{opacity:0;pointer-events:none}
-  #boot .h{font-family:var(--serif);font-weight:700;font-size:54px;display:inline-block;transform:scaleX(1.4);transform-origin:left;letter-spacing:.12em;margin-bottom:10px}
+  #boot .h{font-family:var(--serif);font-weight:400;font-size:54px;display:inline-block;transform:scaleX(1.4);transform-origin:left;letter-spacing:.12em;margin-bottom:10px}
   #boot .ok{color:var(--teal);text-shadow:var(--tglow)}
   #boot .warn{color:#ffb347}
   #boot .cur{display:inline-block;width:.55em;height:1em;background:var(--txt);vertical-align:-3px;animation:blink 1s infinite steps(1)}
@@ -878,7 +881,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.6';
+const VERSION = '2026-11-14.7';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
