@@ -590,7 +590,7 @@ const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
    opslaat, gaat hiervoor.
    ================================================================ */
 const PRESET = {
-  agendaUrl:   '',            // https://script.google.com/macros/s/…/exec?token=…
+  agendaUrl:   'https://script.google.com/macros/s/AKfycbycjBR2xMOluSLu0DnaONDN0KQLsXnybZIpYVww3Vl0wFRHOxr6Y-QnqIkjfT7-QzCAOw/exec?token=Wd-3jPk_E-er-HmuAdHvSJyegD_bmuuJ',   // TIJDELIJK vast ingesteld
   doorbellUrl: '',            // leeg = deurbelvak verbergen
   locName:     'Amerongen',
   lat:         52.0033,
@@ -993,7 +993,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.17';
+const VERSION = '2026-11-14.18';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
