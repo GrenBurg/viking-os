@@ -999,7 +999,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.20';
+const VERSION = '2026-11-14.21';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
@@ -1034,7 +1034,16 @@ $('setSave').addEventListener('click', ()=>{
   saveCfg(c); CFG = c; if(localStorage.getItem('vikingos')) location.reload(); else { $('settings').classList.remove('open'); loadAgenda(); loadWeather(); }
 });
 $('setClose').addEventListener('click', ()=> $('settings').classList.remove('open'));
-$('setFull').addEventListener('click', async ()=>{ try{ await document.documentElement.requestFullscreen(); await screen.orientation?.lock?.('landscape'); }catch(e){} });
+async function goFull(){ try{ if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); await screen.orientation?.lock?.('landscape'); }catch(e){} }
+$('setFull').addEventListener('click', ()=>{ try{ localStorage.setItem('vos-full','1'); }catch(e){} goFull(); });
+// Na een herstart (bijv. automatische update) mag de browser niet zelf terug naar volledig scherm:
+// de eerste tik ergens op het scherm zet het dan weer aan.
+(function(){ let want=false; try{ want = localStorage.getItem('vos-full')==='1'; }catch(e){}
+  const standalone = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
+  if(!want || standalone) return;
+  const once = ()=>{ if(!document.fullscreenElement) goFull(); };
+  document.addEventListener('pointerdown', once, {capture:true});
+})();
 </script>
 </body>
 </html>
