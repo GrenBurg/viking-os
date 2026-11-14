@@ -24,8 +24,8 @@ const CALENDAR_NAMES = ['JurrIris Agenda'];
 const CALENDARS = [];
 
 const MAX_DAYS = 31;
-// Nieuwe afspraken: alles wat in de laatste 12 uur is aangemaakt, tot zoveel dagen vooruit
-const NEW_HOURS = 12;
+// Nieuwe afspraken: alles wat in de laatste 24 uur is aangemaakt, tot zoveel dagen vooruit
+const NEW_HOURS = 24;
 const NEW_HORIZON_DAYS = 120;
 
 // ---------------------------------------------------------------

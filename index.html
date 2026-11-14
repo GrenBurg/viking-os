@@ -12,25 +12,34 @@
   /* lettertypes in de repo zelf (OFL), zodat ze altijd laden */
   @font-face{font-family:'VOS Data';src:url(fonts/dotgothic16-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:82%}
   @font-face{font-family:'VOS Titel';src:url(fonts/arvo-latin-400-normal.woff2) format('woff2');font-weight:400;font-display:block;size-adjust:88%}
-  /* --- nieuwe afspraak: noodmelding in blauw, 12 uur zichtbaar --- */
-  #newBox{display:none;flex:0 0 auto;margin:10px -20px -16px;border-top:3px solid #5ab8ff;background:rgba(40,120,255,.10);
-          box-shadow:inset 0 0 40px rgba(90,184,255,.18)}
-  #newBox.on{display:block}
-  #newBox .nh{background:#5ab8ff;color:#00060f;text-shadow:none;font-family:var(--serif);font-size:24px;letter-spacing:.12em;padding:3px 20px;
-              display:flex;justify-content:space-between;animation:nblink 1.2s infinite steps(1)}
-  #newBox .nh span:first-child{display:inline-block;transform:scaleX(1.25);transform-origin:left}
-  @keyframes nblink{50%{background:#0b2a4d;color:#5ab8ff}}
-  #newBox .ni{padding:8px 20px;border-bottom:1px dashed rgba(90,184,255,.35);color:#9fd4ff;
-              text-shadow:0 0 2px rgba(90,184,255,.9),0 0 10px rgba(90,184,255,.45)}
-  #newBox .ni:last-child{border-bottom:0}
-  #newBox .nt{font-size:30px;line-height:1.1}
-  #newBox .nw{font-size:22px;color:#5ab8ff}
-  #newBox .na{font-size:18px;color:#3f7fb8}
-  #newBox.idle{border-top-color:#2f5f8a;background:rgba(40,120,255,.04);box-shadow:none}
-  #newBox.idle .nh{animation:none;background:#1b3d5e;color:#7fb6e6}
-  #newBox .ni.none{font-size:20px;color:#3f7fb8;text-shadow:none;padding:8px 20px}
+  /* --- nieuwe afspraken: eigen (groen) paneel, meldingen erin in blauw, 24 uur --- */
+  #newPanel{flex:0 0 auto;max-height:42%;display:flex;flex-direction:column}
+  #newBox{overflow:hidden;min-height:0}
+  #newBox .ni{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;padding:8px 12px 8px 14px;margin:0 0 8px;
+              border:2px solid #5ab8ff;background:rgba(40,120,255,.10);box-shadow:inset 0 0 26px rgba(90,184,255,.18);
+              color:#a8d8ff;text-shadow:0 0 2px rgba(90,184,255,.9),0 0 10px rgba(90,184,255,.45)}
+  #newBox .ni:last-child{margin-bottom:0}
+  #newBox .ni.fresh{animation:nblink 1.2s infinite steps(1)}
+  @keyframes nblink{50%{border-color:#0b2a4d;background:rgba(40,120,255,.03)}}
+  #newBox .nw{font-size:22px;color:#5ab8ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #newBox .nt{font-size:28px;line-height:1.1;grid-column:1 / -1;display:flex;align-items:center;min-width:0}
+  #newBox .nt > span:last-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  #newBox .na{font-size:18px;color:#4f8fc8;grid-column:1 / -1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #newBox .alarm{font-size:18px;background:#5ab8ff;color:#00060f;text-shadow:none;padding:0 6px;align-self:start}
   #newBox .pic{background:#5ab8ff;box-shadow:0 0 6px rgba(90,184,255,.6)}
+  #newBox .none{font-size:22px;color:var(--dim);padding:2px 0}
   .emo{filter:grayscale(1) brightness(1.15) sepia(1) hue-rotate(68deg) saturate(4.5) drop-shadow(0 0 3px rgba(141,255,154,.7));font-family:'Noto Emoji',sans-serif}
+  /* --- kaders: tekst mag nooit door een rand lopen --- */
+  .panel{overflow:hidden}
+  .col{min-width:0}
+  #agenda{min-height:0}
+  #forecast{min-height:0;display:flex;flex-direction:column}
+  #forecast .days{flex:1;min-height:0}
+  #weather{min-height:0}
+  #p2kList{overflow:hidden;min-height:0}
+  #p2000{min-height:0;display:flex;flex-direction:column}
+  .ptitle{gap:14px}
+  .ptitle small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 </style>
 <style>
   :root{
@@ -370,7 +379,7 @@
   .ptitle .ser{font-size:.86em;text-transform:uppercase}
   .logo{font-family:var(--serif);font-weight:400;font-size:50px;letter-spacing:.12em}
   .logo .ser{transform:scaleX(1.45)}
-  #cursor{margin-left:150px}
+  #cursor{margin-left:14px}
   .date .ser{font-size:.86em;text-transform:uppercase;transform:scaleX(1.08)}
   .dayhead .ser{font-size:.92em;transform:scaleX(1.25);letter-spacing:.08em}
 
@@ -484,6 +493,9 @@
       <section class="panel" id="agenda">
         <div class="ptitle">// AGENDA <small id="aupd">—</small></div>
         <div id="agendaList"><div class="empty">LADEN…</div></div>
+      </section>
+      <section class="panel" id="newPanel">
+        <div class="ptitle">// NIEUWE AFSPRAKEN <small id="nupd">24 UUR</small></div>
         <div id="newBox"></div>
       </section>
     </div>
@@ -543,9 +555,8 @@ function fit(){
   const vw = vv ? vv.width : innerWidth, vh = vv ? vv.height : innerHeight;
   const ox = vv ? vv.offsetLeft : 0, oy = vv ? vv.offsetTop : 0;
   const W = 1600;
-  const h = Math.max(860, Math.round(W * vh / vw));
+  const h = Math.max(960, Math.round(W * vh / vw));   // minder hoog scherm -> kleiner schalen, niet samenpersen
   stage.style.setProperty('--h', h + 'px');
-  stage.classList.toggle('short', h < 920);   // statusbalk zichtbaar -> compacter
   const s = Math.min(vw/W, vh/h);
   stage.style.left = (ox + vw/2) + 'px';
   stage.style.top  = (oy + vh/2) + 'px';
@@ -656,6 +667,18 @@ function renderWeather(){
   $('sunrise').textContent=hhmm(sr); $('sunset').textContent=hhmm(ss); $('daylen').textContent=`${Math.floor(mins/60)}u${pad(mins%60)}`;
   buildTicker();
 }
+
+/* ===== uitgerekte titels: marge rechts = extra breedte door scaleX ===== */
+function fixSer(){
+  document.querySelectorAll('.ser').forEach(el=>{
+    const m = getComputedStyle(el).transform; if(!m || m==='none') return;
+    const k = parseFloat(m.slice(7)); if(!(k>1)) return;
+    const w = el.offsetWidth; el.style.marginRight = (w*(k-1)).toFixed(1)+'px';
+  });
+}
+let serT=null;
+new MutationObserver(()=>{ clearTimeout(serT); serT=setTimeout(fixSer,50); }).observe(document.getElementById('stage'),{childList:true,subtree:true});
+document.fonts && document.fonts.ready.then(fixSer);
 
 /* ===== kompas: wijzer wijst waar de wind VANDAAN komt ===== */
 function drawCompass(dir, kmh){
@@ -768,19 +791,19 @@ function renderAgenda(){
 
 /* ===== nieuwe afspraken (aangemaakt < 12 uur geleden) ===== */
 function renderNew(){
-  const box=$('newBox'), now=Date.now();
-  const items=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 12*3600e3);
-  box.classList.add('on');
-  if(!items.length){ box.classList.add('idle'); box.innerHTML='<div class="nh"><span>▲ NIEUWE AFSPRAKEN</span><span>0</span></div><div class="ni none">GEEN NIEUWE AFSPRAKEN IN DE AFGELOPEN 12 UUR</div>'; return; }
-  box.classList.remove('idle');
-  box.innerHTML = `<div class="nh"><span>▲ NIEUWE AFSPRAAK${items.length>1?'EN':''}</span><span>${items.length}</span></div>` +
-    items.slice(0,3).map(r=>{
-      const s=new Date(r.start), e=new Date(r.end), c=new Date(r.created);
-      const left=Math.max(0,Math.ceil((12*3600e3-(now-c))/3600e3));
-      const when = `${KORT[s.getDay()]} ${s.getDate()} ${MAANDEN[s.getMonth()].slice(0,3).toUpperCase()} · ${r.allDay?'HELE DAG':hhmm(s)+'–'+hhmm(e)}`;
-      return `<div class="ni"><div class="nw">${when}</div><div class="nt">${pic(agIcon(r))}${mono(esc(r.title))}</div>
-        <div class="na">TOEGEVOEGD ${hhmm(c)} · NOG ${left} UUR ZICHTBAAR${r.location?' · ⌖ '+esc(r.location):''}</div></div>`;
-    }).join('');
+  const box=$('newBox'), now=Date.now(), H=24;
+  const items=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < H*3600e3);
+  $('nupd').textContent = items.length ? `${items.length} · 24 UUR` : '24 UUR';
+  if(!items.length){ box.innerHTML='<div class="none">GEEN NIEUWE AFSPRAKEN</div>'; return; }
+  box.innerHTML = items.slice(0,3).map(r=>{
+    const s=new Date(r.start), e=new Date(r.end), c=new Date(r.created);
+    const left=Math.max(0,Math.ceil((H*3600e3-(now-c))/3600e3));
+    const fresh = now-c < 3600e3;   // eerste uur knipperen
+    const when = `${KORT[s.getDay()]} ${s.getDate()} ${MAANDEN[s.getMonth()].slice(0,3).toUpperCase()} · ${r.allDay?'HELE DAG':hhmm(s)+'–'+hhmm(e)}`;
+    return `<div class="ni ${fresh?'fresh':''}"><div class="nw">${when}</div><div class="alarm">NIEUW</div>
+      <div class="nt">${pic(agIcon(r))}<span>${mono(esc(r.title))}</span></div>
+      <div class="na">TOEGEVOEGD ${hhmm(c)} · NOG ${left} UUR${r.location?' · ⌖ '+esc(r.location):''}</div></div>`;
+  }).join('');
 }
 const errHtml = () => (AGENDA && AGENDA.errors && AGENDA.errors.length) ? `<div class="err">⚠ ${AGENDA.errors.map(esc).join('<br>⚠ ')}</div>` : '';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -922,7 +945,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.10';
+const VERSION = '2026-11-14.11';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
