@@ -26,6 +26,9 @@
   #newBox .nt{font-size:30px;line-height:1.1}
   #newBox .nw{font-size:22px;color:#5ab8ff}
   #newBox .na{font-size:18px;color:#3f7fb8}
+  #newBox.idle{border-top-color:#2f5f8a;background:rgba(40,120,255,.04);box-shadow:none}
+  #newBox.idle .nh{animation:none;background:#1b3d5e;color:#7fb6e6}
+  #newBox .ni.none{font-size:20px;color:#3f7fb8;text-shadow:none;padding:8px 20px}
   #newBox .pic{background:#5ab8ff;box-shadow:0 0 6px rgba(90,184,255,.6)}
   .emo{filter:grayscale(1) brightness(1.15) sepia(1) hue-rotate(68deg) saturate(4.5) drop-shadow(0 0 3px rgba(141,255,154,.7));font-family:'Noto Emoji',sans-serif}
 </style>
@@ -767,8 +770,9 @@ function renderAgenda(){
 function renderNew(){
   const box=$('newBox'), now=Date.now();
   const items=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 12*3600e3);
-  if(!items.length){ box.classList.remove('on'); box.innerHTML=''; return; }
   box.classList.add('on');
+  if(!items.length){ box.classList.add('idle'); box.innerHTML='<div class="nh"><span>▲ NIEUWE AFSPRAKEN</span><span>0</span></div><div class="ni none">GEEN NIEUWE AFSPRAKEN IN DE AFGELOPEN 12 UUR</div>'; return; }
+  box.classList.remove('idle');
   box.innerHTML = `<div class="nh"><span>▲ NIEUWE AFSPRAAK${items.length>1?'EN':''}</span><span>${items.length}</span></div>` +
     items.slice(0,3).map(r=>{
       const s=new Date(r.start), e=new Date(r.end), c=new Date(r.created);
@@ -918,7 +922,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.9';
+const VERSION = '2026-11-14.10';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
