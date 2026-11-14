@@ -843,13 +843,13 @@ let NEWS=[];
 const newKey = r => r.title+'|'+r.start;
 function computeNew(){
   const now=Date.now();
-  NEWS=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 24*3600e3);
+  NEWS=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 2*3600e3);   /* blauw in agenda en lichtkrant: 2 uur */
 }
 function renderNew(){
   computeNew();
   const el=$('xmit'), now=Date.now();
   let gone=[]; try{ gone=JSON.parse(localStorage.getItem('vos-xmit-gone')||'[]'); }catch(e){}
-  const hot=NEWS.filter(r=> now-new Date(r.created) < 2*3600e3   /* banner 2 uur */ && !gone.includes(newKey(r)));
+  const hot=NEWS.filter(r=> now-new Date(r.created) < 20*60e3   /* banner 20 minuten */ && !gone.includes(newKey(r)));
   const hdr=document.querySelector('header');
   if(!hot.length){ el.classList.remove('on'); el.innerHTML=''; hdr.classList.remove('tx'); return; }
   hdr.classList.add('tx');
@@ -999,7 +999,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.21';
+const VERSION = '2026-11-14.22';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
