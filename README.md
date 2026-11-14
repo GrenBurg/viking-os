@@ -62,3 +62,16 @@ vul die dan in bij *Deurbel-stream* in de instellingen.
 ## Weer
 
 Komt van Open-Meteo (gratis, geen account). Elke 15 minuten bijgewerkt; agenda elke 5 minuten.
+
+## Bijwerken
+
+Elke wijziging die in deze repo komt, staat binnen een paar minuten op GitHub Pages.
+De tablet controleert elke 10 minuten `version.json`; staat daar een ander nummer dan in
+`index.html` (`const VERSION`), dan laadt hij zichzelf opnieuw. Verhoog bij een wijziging dus
+**beide** versienummers.
+
+## Aanbevolen op de tablet: Fully Kiosk Browser
+
+- Start URL: `https://grenburg.github.io/viking-os/`
+- Schermvullend, scherm altijd aan, start vanzelf na herstart van de tablet
+- Instellingen dashboard: 5× snel op het logo tikken (agenda-adres wordt alleen op de tablet bewaard)
