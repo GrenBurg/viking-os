@@ -19,7 +19,7 @@
 const TOKEN = 'VERANDER-MIJ-in-iets-lang-en-willekeurigs';  // in je eigen Google-project staat de echte code
 
 // Welke agenda's (op naam, hoofdletters maken niet uit). Leeg = alle aangevinkte agenda's.
-const CALENDAR_NAMES = ['Jurriris'];
+const CALENDAR_NAMES = ['JurrIris Agenda'];
 // Of specifieke agenda-ID's, bijv. ['abc123@group.calendar.google.com'] (gaat voor op namen)
 const CALENDARS = [];
 
