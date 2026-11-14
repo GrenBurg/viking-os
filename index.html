@@ -19,15 +19,15 @@
     --disp:'Orbitron','Share Tech Mono',sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{width:100%;height:100%;background:#000;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;-webkit-text-size-adjust:none;text-size-adjust:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
   /* 1920x1080 podium, geschaald naar het scherm */
-  #stage{position:absolute;left:50%;top:50%;width:1920px;height:var(--h,1080px);transform-origin:center center;
+  #stage{position:absolute;left:50%;top:50%;width:1600px;height:var(--h,960px);transform-origin:center center;
     background:
       radial-gradient(1200px 700px at 18% -10%, rgba(255,43,214,.16), transparent 60%),
       radial-gradient(1100px 800px at 110% 110%, rgba(0,240,255,.14), transparent 60%),
       linear-gradient(var(--bg),var(--bg2));
-    color:var(--txt);font-family:var(--mono);padding:34px 44px 0;display:grid;
-    grid-template-rows:84px 1fr 54px;gap:22px}
+    color:var(--txt);font-family:var(--mono);padding:22px 30px 0;display:grid;
+    grid-template-rows:62px 1fr 46px;gap:16px}
   /* perspectief-raster op de achtergrond */
   #stage::before{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:46%;pointer-events:none;
     background:
@@ -58,8 +58,8 @@
   @keyframes pulse{50%{opacity:.35}}
 
   /* ---------- grid ---------- */
-  main{display:grid;grid-template-columns:600px minmax(0,1fr) 560px;gap:26px;min-height:0;position:relative;z-index:2}
-  .col{display:flex;flex-direction:column;gap:26px;min-height:0}
+  main{display:grid;gap:18px !important;grid-template-columns:500px minmax(0,1fr) 450px;gap:26px;min-height:0;position:relative;z-index:2}
+  .col{display:flex;flex-direction:column;gap:16px;min-height:0}
   .panel{position:relative;background:var(--panel);padding:26px 30px;min-height:0;
     clip-path:polygon(0 0,calc(100% - 28px) 0,100% 28px,100% 100%,28px 100%,0 calc(100% - 28px));
     box-shadow:inset 0 0 0 1px var(--line), inset 0 0 40px rgba(0,240,255,.05)}
@@ -155,7 +155,8 @@
   #forecast.big .fd{display:flex;flex-direction:column;justify-content:center;gap:10px}
   #forecast.big .fd .w{font-size:22px}
   #forecast.big .fd .i{font-size:96px;margin:18px 0}
-  #forecast.big .fd .mx{font-size:44px}
+  #forecast.big .fd .mx{font-size:38px}
+  #forecast .ptitle small{display:none}
   #forecast.big .fd .mn{font-size:28px}
   #forecast.big .fd .p{font-size:20px}
   #forecast.big .sun{margin-top:24px;font-size:20px;letter-spacing:1px}
@@ -206,56 +207,60 @@
 
   /* koptekst */
   header{border-bottom:2px solid var(--line)}
-  .logo{font-size:64px;letter-spacing:10px;color:var(--txt)}
+  .logo{font-size:54px;letter-spacing:8px;color:var(--txt)}
   .logo span{color:var(--txt)}
   .logo::before,.logo::after{display:none}
   .logo{animation:none}
-  .hdr-r{font-size:28px;color:var(--dim)}
+  .hdr-r{font-size:24px;color:var(--dim);gap:26px}
   .hdr-r b{color:var(--txt)}
   .dot{background:var(--txt);box-shadow:var(--glow);border-radius:0;width:12px;height:12px}
   .dot.bad{background:var(--red)}
 
   /* panelen: gewone rechte kaders met omgekeerde titelbalk */
-  .panel,.panel.mag{clip-path:none;background:transparent;border:2px solid var(--line);box-shadow:inset 0 0 30px rgba(141,255,154,.06);padding:0 26px 22px}
+  .panel,.panel.mag{clip-path:none;background:transparent;border:2px solid var(--line);box-shadow:inset 0 0 30px rgba(141,255,154,.06);padding:0 20px 16px}
   .panel::after,.panel.mag::after{display:none}
-  .ptitle,.panel.mag .ptitle{margin:0 -26px 16px;padding:4px 26px;background:var(--txt);color:#010601;text-shadow:none;
-    font-size:28px;letter-spacing:6px;font-family:var(--disp)}
+  .ptitle,.panel.mag .ptitle{margin:0 -20px 12px;padding:2px 20px;background:var(--txt);color:#010601;text-shadow:none;
+    font-size:26px;letter-spacing:5px;font-family:var(--disp)}
   .ptitle{white-space:nowrap}
   .ptitle small{color:#0b3a12;font-size:22px;letter-spacing:2px}
 
   /* klok */
-  .time{font-family:var(--disp);font-weight:400;font-size:158px;letter-spacing:0;color:var(--txt);text-shadow:var(--glow),0 0 40px rgba(141,255,154,.35)}
-  .time .sec{font-size:62px;color:var(--txt);text-shadow:var(--glow);top:22px;margin-left:6px}
-  .date{font-size:34px;margin-top:0;white-space:nowrap}
-  .meta{font-size:24px;white-space:nowrap}
+  .time{font-family:var(--disp);font-weight:400;font-size:124px;letter-spacing:0;color:var(--txt);text-shadow:var(--glow),0 0 40px rgba(141,255,154,.35)}
+  .time .sec{font-size:46px;color:var(--txt);text-shadow:var(--glow);top:22px;margin-left:6px}
+  .date{font-size:26px;margin-top:0;white-space:nowrap}
+  .meta{font-size:19px;white-space:nowrap}
   .meta b{color:var(--txt)}
 
   /* weer */
   .wicon{color:var(--txt);text-shadow:none}
   .ico{stroke-width:2.6;filter:drop-shadow(0 0 3px rgba(141,255,154,.8))}
-  .wtemp{font-family:var(--disp);font-weight:400;font-size:120px}
+  .wtemp{font-family:var(--disp);font-weight:400;font-size:104px}
   .wtemp sup{font-size:52px;color:var(--txt)}
-  .wdesc{font-size:38px;color:var(--txt)}
+  .wdesc{font-size:32px;color:var(--txt)}
   .stat{border-left:2px solid var(--line)}
   .stat i{font-size:22px;color:var(--dim)}
-  .stat b{font-size:32px;white-space:nowrap}
+  .stat b{font-size:28px;white-space:nowrap}
+  .wstats{margin-top:14px}
+  .wicon{font-size:84px;width:100px}
   .hours{border-top:2px dashed var(--line)}
-  .hours div{font-size:22px}
+  .hours div{font-size:20px}
+  .hours{padding-top:10px}
   .hours{grid-template-columns:repeat(8,minmax(0,1fr))}
   .hours .hi{color:var(--txt)}
-  .hours .ht{font-size:32px}
+  .hours .ht{font-size:28px}
   .hours .hp{font-size:22px;color:var(--dim)}
   .bar span{width:16px;background:var(--txt);box-shadow:var(--glow)}
 
   /* agenda */
-  .dayhead{font-size:30px;color:var(--txt);border-bottom:2px dashed var(--line)}
+  .day{margin-bottom:14px}
+  .dayhead{font-size:28px;margin-bottom:6px;padding-bottom:4px;color:var(--txt);border-bottom:2px dashed var(--line)}
   .dayhead small{font-size:26px;color:var(--dim)}
-  .ev{grid-template-columns:150px minmax(0,1fr)}
+  .ev{grid-template-columns:128px minmax(0,1fr);padding:7px 0 7px 14px;gap:14px}
   .ev .n{overflow-wrap:anywhere}
   .ev::before{width:6px;background:var(--txt);box-shadow:var(--glow)}
-  .ev .t{font-size:28px;color:var(--txt)}
-  .ev .n{font-size:34px;color:var(--txt);line-height:1.05}
-  .ev .l{font-size:26px;color:var(--dim)}
+  .ev .t{font-size:26px;color:var(--txt)}
+  .ev .n{font-size:32px;color:var(--txt);line-height:1.05}
+  .ev .l{font-size:23px;color:var(--dim)}
   .ev.now{background:rgba(141,255,154,.10)}
   .ev.now .t{color:var(--txt)}
   .tag{background:var(--txt);color:#010601;text-shadow:none;box-shadow:none;font-size:22px;animation:blink 1s infinite steps(1)}
@@ -271,11 +276,14 @@
   .fd .mx{font-size:40px}
   .fd .mn{font-size:30px;color:var(--dim)}
   .fd .p{font-size:24px;color:var(--dim)}
-  #forecast.big .fd .w{font-size:32px}
-  #forecast.big .fd .mx{font-size:52px}
-  #forecast.big .fd .mn{font-size:38px}
-  #forecast.big .fd .p{font-size:22px;white-space:nowrap}
-  .sun,#forecast.big .sun{font-size:28px;color:var(--dim)}
+  #forecast.big .fd .w{font-size:28px}
+  #forecast.big .days{gap:8px}
+  #forecast.big .fd .mx{font-size:38px}
+  #forecast .ptitle small{display:none}
+  #forecast.big .fd .i{font-size:70px;margin:8px 0}
+  #forecast.big .fd .mn{font-size:28px}
+  #forecast.big .fd .p{font-size:17px;white-space:nowrap}
+  .sun,#forecast.big .sun{font-size:24px;color:var(--dim);margin-top:14px}
   .sun b{color:var(--txt)}
 
   /* deurbel */
@@ -284,7 +292,7 @@
   .corner{border-color:var(--txt)}
 
   /* onderbalk */
-  footer{border-top:2px solid var(--line);font-size:30px;color:var(--dim)}
+  footer{border-top:2px solid var(--line);font-size:28px;color:var(--dim)}
   footer .lbl{background:var(--txt);color:#010601;text-shadow:none;font-size:26px;letter-spacing:4px}
   .tick b{color:var(--txt)}
   .tick em{color:var(--dim)}
@@ -299,6 +307,9 @@
   .sbox input{background:#000;border:2px solid var(--line);color:var(--txt);font-size:24px;text-shadow:var(--glow)}
   .sbtns button{font-family:var(--disp);font-size:24px;color:var(--txt);border:2px solid var(--line);background:transparent}
   .sbtns .pri{background:var(--txt);color:#010601}
+  #stage.short .bar{display:none}
+  #stage.short .wtemp{font-size:88px}
+  #stage.short .hours .hi{margin:2px 0}
 </style>
 </head>
 <body>
@@ -377,6 +388,7 @@
       <label>Lengtegraad<input id="setLon" inputmode="decimal"></label>
     </div>
     <label>Titel<input id="setTitle"></label>
+    <div id="scrinfo" style="font-size:20px;color:var(--dim);margin:4px 0 10px"></div>
     <div class="sbtns"><button id="setFull">VOLLEDIG SCHERM</button><button id="setClose">SLUITEN</button><button id="setSave" class="pri">OPSLAAN</button></div>
   </div>
 </div>
@@ -386,9 +398,11 @@
 const stage = document.getElementById('stage');
 function fit(){
   // breedte vast op 1920, hoogte volgt de verhouding van het scherm (16:9, 16:10, 4:3…)
-  const h = Math.max(1080, Math.round(1920 * innerHeight / innerWidth));
+  const W = 1600;
+  const h = Math.max(860, Math.round(W * innerHeight / innerWidth));
   stage.style.setProperty('--h', h + 'px');
-  const s = Math.min(innerWidth/1920, innerHeight/h);
+  stage.classList.toggle('short', h < 920);   // statusbalk zichtbaar -> compacter
+  const s = Math.min(innerWidth/W, innerHeight/h);
   stage.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener('resize', fit); fit();
@@ -399,7 +413,21 @@ const DAGEN = ['zondag','maandag','dinsdag','woensdag','donderdag','vrijdag','za
 const KORT  = ['ZO','MA','DI','WO','DO','VR','ZA'];
 const MAANDEN = ['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
 const hhmm = d => pad(d.getHours())+':'+pad(d.getMinutes());
-const DEFAULTS = { title:'VIKING//OS', agendaUrl:'', doorbellUrl:'', locName:'Amerongen', lat:52.0033, lon:5.4597, days:7 };
+/* ================================================================
+   INSTELLINGEN — vul hier je eigen waarden in (lokale versie)
+   Wat je later via het instellingenscherm (5x op logo tikken)
+   opslaat, gaat hiervoor.
+   ================================================================ */
+const PRESET = {
+  agendaUrl:   '',            // https://script.google.com/macros/s/…/exec?token=…
+  doorbellUrl: '',            // leeg = deurbelvak verbergen
+  locName:     'Amerongen',
+  lat:         52.0033,
+  lon:         5.4597,
+  title:       'VIKING//OS',
+  days:        7
+};
+const DEFAULTS = Object.assign({ title:'VIKING//OS', agendaUrl:'', doorbellUrl:'', locName:'Amerongen', lat:52.0033, lon:5.4597, days:7 }, PRESET);
 function loadCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem('vikingos') || '{}'); }catch(e){} return Object.assign({}, DEFAULTS, c); }
 function saveCfg(c){ try{ localStorage.setItem('vikingos', JSON.stringify(c)); }catch(e){} }
 let CFG = loadCfg(), WEATHER = null, AGENDA = null, online = true;
@@ -572,6 +600,19 @@ function buildTicker(){
   if(!CFG.agendaUrl) openSettings();
 })();
 
+/* ===== automatisch bijwerken =====
+   Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
+const VERSION = '2026-11-14.1';
+async function checkUpdate(){
+  try{
+    const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
+    if(!r.ok) return;
+    const v = (await r.json()).version;
+    if(v && v !== VERSION) location.reload();
+  }catch(e){}
+}
+if(location.protocol.startsWith('http')) setInterval(checkUpdate, 10*60*1000);
+
 /* ===== scherm aan houden ===== */
 let wakeLock = null;
 async function keepAwake(){
@@ -586,16 +627,17 @@ $('logo').addEventListener('click', ()=>{ const n=Date.now(); taps = (n-tapT<800
 function openSettings(){
   $('setAgenda').value = CFG.agendaUrl; $('setDoor').value = CFG.doorbellUrl; $('setTitle').value = CFG.title;
   $('setLoc').value = CFG.locName; $('setLat').value = CFG.lat; $('setLon').value = CFG.lon;
+  $('scrinfo').textContent = `SCHERM: ${innerWidth}×${innerHeight} · DPR ${devicePixelRatio} · ${screen.width}×${screen.height}`;
   $('settings').classList.add('open');
 }
 $('setSave').addEventListener('click', ()=>{
   const c = Object.assign({}, CFG, {
     agendaUrl: $('setAgenda').value.trim(), doorbellUrl: $('setDoor').value.trim(), title: $('setTitle').value.trim() || DEFAULTS.title,
     locName: $('setLoc').value.trim() || DEFAULTS.locName, lat: parseFloat($('setLat').value) || DEFAULTS.lat, lon: parseFloat($('setLon').value) || DEFAULTS.lon });
-  saveCfg(c); location.reload();
+  saveCfg(c); CFG = c; if(localStorage.getItem('vikingos')) location.reload(); else { $('settings').classList.remove('open'); loadAgenda(); loadWeather(); }
 });
 $('setClose').addEventListener('click', ()=> $('settings').classList.remove('open'));
-$('setFull').addEventListener('click', ()=>{ document.documentElement.requestFullscreen?.().catch(()=>{}); });
+$('setFull').addEventListener('click', async ()=>{ try{ await document.documentElement.requestFullscreen(); await screen.orientation?.lock?.('landscape'); }catch(e){} });
 </script>
 </body>
 </html>
