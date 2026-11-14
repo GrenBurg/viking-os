@@ -24,6 +24,9 @@ const CALENDAR_NAMES = ['JurrIris Agenda'];
 const CALENDARS = [];
 
 const MAX_DAYS = 31;
+// Nieuwe afspraken: alles wat in de laatste 12 uur is aangemaakt, tot zoveel dagen vooruit
+const NEW_HOURS = 12;
+const NEW_HORIZON_DAYS = 120;
 
 // ---------------------------------------------------------------
 // P2000: plaatsen binnen ~15 km van Amerongen (feeds van alarmeringen.nl)
@@ -72,7 +75,8 @@ function doGet(e) {
           end: ev.getEndTime().toISOString(),
           allDay: ev.isAllDayEvent(),
           calendar: cal.getName(),
-          color: cal.getColor() || '#00f0ff'
+          color: cal.getColor() || '#00f0ff',
+          created: ev.getDateCreated().toISOString()
         });
       });
     } catch (err) {
@@ -81,7 +85,39 @@ function doGet(e) {
   });
 
   events.sort((a, b) => a.start < b.start ? -1 : a.start > b.start ? 1 : (b.allDay - a.allDay));
-  return json_({ events: events, errors: errors, updated: new Date().toISOString() });
+  return json_({ events: events, recent: recent_(cals), errors: errors, updated: new Date().toISOString() });
+}
+
+// Afspraken die in de laatste NEW_HOURS uur zijn aangemaakt (ook ver vooruit), 5 min gecachet
+function recent_(cals) {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('recent');
+  if (hit) return JSON.parse(hit);
+  const now = new Date(), since = new Date(now.getTime() - NEW_HOURS * 3600 * 1000);
+  const from = new Date(now.getTime() - 24 * 3600 * 1000), to = new Date(now.getTime() + NEW_HORIZON_DAYS * 24 * 3600 * 1000);
+  const out = [], seen = {};
+  cals.forEach(cal => {
+    try {
+      cal.getEvents(from, to).forEach(ev => {
+        const c = ev.getDateCreated();
+        if (c < since) return;
+        const key = ev.getId();
+        if (seen[key]) return;            // herhalende afspraak: alleen de eerste keer
+        seen[key] = true;
+        out.push({
+          title: ev.getTitle() || '(geen titel)',
+          location: ev.getLocation() || '',
+          start: ev.getStartTime().toISOString(),
+          end: ev.getEndTime().toISOString(),
+          allDay: ev.isAllDayEvent(),
+          created: c.toISOString()
+        });
+      });
+    } catch (err) {}
+  });
+  out.sort((a, b) => a.created < b.created ? 1 : -1);
+  cache.put('recent', JSON.stringify(out), 300);
+  return out;
 }
 
 function p2000_() {
