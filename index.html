@@ -839,11 +839,12 @@ function renderAgenda(){
 }
 
 /* ===== nieuwe afspraken (aangemaakt < 12 uur geleden) ===== */
-let NEWS=[];
+let NEWS=[], NEWS_TICK=[];
 const newKey = r => r.title+'|'+r.start;
 function computeNew(){
   const now=Date.now();
-  NEWS=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 2*3600e3);   /* blauw in agenda en lichtkrant: 2 uur */
+  NEWS_TICK=((AGENDA&&AGENDA.recent)||[]).filter(r=>r.created && now-new Date(r.created) < 24*3600e3);   /* lichtkrant: 24 uur */
+  NEWS=NEWS_TICK.filter(r=> now-new Date(r.created) < 2*3600e3);   /* blauw in agenda: 2 uur */
 }
 function renderNew(){
   computeNew();
@@ -916,7 +917,7 @@ function buildTicker(){
     parts.push(`<b>MORGEN</b> ${wmo(d.weather_code[1])[1]}, max ${Math.round(d.temperature_2m_max[1])}°`); }
   if(AGENDA){ const now=new Date(); const nxt=AGENDA.events.find(e=>!e.allDay && new Date(e.start)>now);
     if(nxt){ const s=new Date(nxt.start); parts.push(`<b>VOLGENDE</b> ${esc(nxt.title)} om ${hhmm(s)}${s.toDateString()!==now.toDateString()?' ('+DAGEN[s.getDay()]+')':''}`); } }
-  NEWS.forEach(r=>{ const s=new Date(r.start); parts.unshift(`<b class="nb">NIEUWE AFSPRAAK</b> <span class="nb">${esc(r.title)} · ${DAGEN[s.getDay()]} ${s.getDate()} ${MAANDEN[s.getMonth()]}${r.allDay?'':' '+hhmm(s)}</span>`); });
+  NEWS_TICK.forEach(r=>{ const s=new Date(r.start); parts.unshift(`<b class="nb">NIEUWE AFSPRAAK</b> <span class="nb">${esc(r.title)} · ${DAGEN[s.getDay()]} ${s.getDate()} ${MAANDEN[s.getMonth()]}${r.allDay?'':' '+hhmm(s)}</span>`); });
   if(P2K && P2K.items && P2K.items[0]){ const it=P2K.items[0]; parts.push(`<b>P2000</b> ${esc(it.text)} (${hhmm(new Date(it.time))})`); }
   parts.push(`<b>NET</b> WiFi de Viking`);
   $('tick').innerHTML = parts.join('<em>◆</em>');
@@ -999,7 +1000,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.22';
+const VERSION = '2026-11-14.23';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
