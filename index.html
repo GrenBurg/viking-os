@@ -599,6 +599,12 @@ const DEFAULTS = Object.assign({ title:'VIKING//OS', agendaUrl:'', doorbellUrl:'
 function loadCfg(){ let c={}; try{ c = JSON.parse(localStorage.getItem('vikingos') || '{}'); }catch(e){} return Object.assign({}, DEFAULTS, c); }
 function saveCfg(c){ try{ localStorage.setItem('vikingos', JSON.stringify(c)); }catch(e){} }
 let CFG = loadCfg(), WEATHER = null, AGENDA = null, online = true;
+// Instellen via het adres (handig voor screensaver/kiosk): ...viking-os/#agenda=<url-gecodeerd agenda-adres>
+(function(){ try{
+  const h = new URLSearchParams(location.hash.slice(1));
+  if(h.get('agenda')){ CFG.agendaUrl = h.get('agenda'); saveCfg(CFG); }
+  if(h.get('door')){ CFG.doorbellUrl = h.get('door'); saveCfg(CFG); }
+}catch(e){} })();
 
 /* ===== klok ===== */
 function isoWeek(d){ const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())); const day=t.getUTCDay()||7; t.setUTCDate(t.getUTCDate()+4-day); const y=new Date(Date.UTC(t.getUTCFullYear(),0,1)); return Math.ceil(((t-y)/864e5+1)/7); }
@@ -968,7 +974,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.15';
+const VERSION = '2026-11-14.16';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
