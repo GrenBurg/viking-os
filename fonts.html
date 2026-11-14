@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VIKING//OS — lettertypes vergelijken</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Slab:wght@300;600&family=Roboto+Slab:wght@200;300&family=Rokkitt:wght@300;400&family=Zilla+Slab:wght@300&family=Arvo&family=VT323&family=Pixelify+Sans&family=Silkscreen&family=Jersey+10&family=Share+Tech+Mono&family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+  :root{--txt:#8dff9a;--dim:#3d8a47;--line:rgba(141,255,154,.55);
+    --glow:0 0 2px rgba(141,255,154,.9),0 0 8px rgba(141,255,154,.45),0 0 18px rgba(141,255,154,.18)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(ellipse at center,#031a06 0%,#010801 60%,#000 100%) fixed;color:var(--txt);
+    font-family:'VT323',monospace;padding:28px 34px 60px;text-shadow:var(--glow)}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 2px,transparent 2px 4px)}
+  h1{font-size:30px;letter-spacing:4px;margin-bottom:6px}
+  p.i{color:var(--dim);font-size:22px;margin-bottom:22px}
+  h2{background:var(--txt);color:#010601;text-shadow:none;font-size:24px;letter-spacing:5px;padding:2px 14px;margin:26px 0 12px}
+  .row{display:grid;grid-template-columns:60px 1fr;gap:16px;align-items:center;border-bottom:1px dashed rgba(141,255,154,.25);padding:12px 0}
+  .lab{font-size:40px;text-align:center;border:2px solid var(--line);border-radius:10px;line-height:52px}
+  .name{font-family:'VT323',monospace;font-size:19px;color:var(--dim);letter-spacing:1px;margin-bottom:4px}
+  .t .s{display:inline-block;transform:scaleX(1.32);transform-origin:left center;white-space:nowrap;text-transform:uppercase;letter-spacing:.07em;font-size:38px}
+  .t .s2{display:inline-block;transform:scaleX(1.1);transform-origin:left center;white-space:nowrap;text-transform:uppercase;letter-spacing:.05em;font-size:24px;margin-top:4px;color:var(--txt)}
+  .d .s{font-size:34px;line-height:1.25}
+  .d .big{font-size:84px;line-height:1}
+</style>
+</head>
+<body>
+  <h1>LETTERTYPES VERGELIJKEN</h1>
+  <p class="i">Kies één letter uit elke groep. Alles in dezelfde groene stijl als het dashboard.</p>
+
+  <h2>A — SYSTEEMTITELS (UITGEREKT, ZOALS IN DE FILM)</h2>
+  <div class="row t"><div class="lab">A1</div><div><div class="name">Josefin Slab 600 — huidig</div>
+    <div class="s" style="font-family:'Josefin Slab';font-weight:600">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Josefin Slab';font-weight:600">Zaterdag 14 november 2026</div></div></div>
+  <div class="row t"><div class="lab">A2</div><div><div class="name">Josefin Slab 300 — dun, dichter bij 'Light'</div>
+    <div class="s" style="font-family:'Josefin Slab';font-weight:300">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Josefin Slab';font-weight:300">Zaterdag 14 november 2026</div></div></div>
+  <div class="row t"><div class="lab">A3</div><div><div class="name">Roboto Slab 200 — strak, rechte schreven</div>
+    <div class="s" style="font-family:'Roboto Slab';font-weight:200">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Roboto Slab';font-weight:200">Zaterdag 14 november 2026</div></div></div>
+  <div class="row t"><div class="lab">A4</div><div><div class="name">Rokkitt 300 — geometrisch, smaller en hoekiger</div>
+    <div class="s" style="font-family:'Rokkitt';font-weight:300">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Rokkitt';font-weight:300">Zaterdag 14 november 2026</div></div></div>
+  <div class="row t"><div class="lab">A5</div><div><div class="name">Zilla Slab 300 — technischer, wat warmer</div>
+    <div class="s" style="font-family:'Zilla Slab';font-weight:300">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Zilla Slab';font-weight:300">Zaterdag 14 november 2026</div></div></div>
+  <div class="row t"><div class="lab">A6</div><div><div class="name">Arvo — zwaarder, klassieke slab</div>
+    <div class="s" style="font-family:'Arvo'">// AGENDA · VANDAAG</div><br><div class="s2" style="font-family:'Arvo'">Zaterdag 14 november 2026</div></div></div>
+
+  <h2>B — DATA (KLOK, TIJDEN, MELDINGEN)</h2>
+  <div class="row d"><div class="lab">B1</div><div><div class="name">VT323 — huidig, oude terminal</div>
+    <div style="font-family:'VT323'"><span class="big">11:14</span><div class="s">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+  <div class="row d"><div class="lab">B2</div><div><div class="name">Pixelify Sans — blokkerig pixel, goed leesbaar</div>
+    <div style="font-family:'Pixelify Sans'"><span class="big">11:14</span><div class="s">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+  <div class="row d"><div class="lab">B3</div><div><div class="name">Silkscreen — grof pixel, zeer 'Atari'</div>
+    <div style="font-family:'Silkscreen'"><span class="big" style="font-size:66px">11:14</span><div class="s" style="font-size:24px">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+  <div class="row d"><div class="lab">B4</div><div><div class="name">Jersey 10 — smal pixel</div>
+    <div style="font-family:'Jersey 10'"><span class="big">11:14</span><div class="s">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+  <div class="row d"><div class="lab">B5</div><div><div class="name">DotGothic16 — matrixpunten, als oude printers/displays</div>
+    <div style="font-family:'DotGothic16'"><span class="big" style="font-size:70px">11:14</span><div class="s" style="font-size:28px">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+  <div class="row d"><div class="lab">B6</div><div><div class="name">Share Tech Mono — strak monospace, geen pixels</div>
+    <div style="font-family:'Share Tech Mono'"><span class="big" style="font-size:72px">11:14</span><div class="s" style="font-size:28px">08:30–12:30 Reenactment overleg · 7°C ZW BFT 4 · Ambulance met spoed</div></div></div></div>
+</body>
+</html>
