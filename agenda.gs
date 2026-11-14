@@ -25,9 +25,25 @@ const CALENDARS = [];
 
 const MAX_DAYS = 31;
 
+// ---------------------------------------------------------------
+// P2000: plaatsen binnen ~15 km van Amerongen (feeds van alarmeringen.nl)
+// ---------------------------------------------------------------
+const P2000_CITIES = [
+  'amerongen','leersum','overberg','maarn','maarsbergen','doorn','driebergen-rijsenburg',
+  'woudenberg','scherpenzeel','veenendaal','rhenen','wijk-bij-duurstede','cothen','langbroek',
+  'leusden','renswoude','austerlitz','achterveld','stoutenburg','lunteren','ede','bennekom',
+  'wageningen','ederveen','de-klomp','kesteren','opheusden','ochten','lienden','ingen',
+  'eck-en-wiel','maurik','ravenswaaij','beusichem','zoelen','echteld','ijzendoorn'
+];
+// Alleen meldingen uit deze regio's (voorkomt bijv. Buren in Friesland of Elst bij Arnhem)
+const P2000_REGIONS = ['/utrecht/', '/gelderland-midden/', '/gelderland-zuid/'];
+const P2000_CACHE_SEC = 120;
+
 function doGet(e) {
   const p = (e && e.parameter) || {};
   if (p.token !== TOKEN) return json_({ error: 'geen toegang (token klopt niet)' });
+
+  if (p.feed === 'p2000') return json_(p2000_());
 
   const days = Math.max(1, Math.min(MAX_DAYS, parseInt(p.days || '7', 10) || 7));
   const start = new Date(); start.setHours(0, 0, 0, 0);
@@ -66,6 +82,46 @@ function doGet(e) {
 
   events.sort((a, b) => a.start < b.start ? -1 : a.start > b.start ? 1 : (b.allDay - a.allDay));
   return json_({ events: events, errors: errors, updated: new Date().toISOString() });
+}
+
+function p2000_() {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('p2000');
+  if (hit) return JSON.parse(hit);
+
+  const res = UrlFetchApp.fetchAll(P2000_CITIES.map(c => ({
+    url: 'https://alarmeringen.nl/feeds/city/' + c + '.rss', muteHttpExceptions: true
+  })));
+  const seen = {}, items = [];
+  res.forEach((r, i) => {
+    if (r.getResponseCode() !== 200) return;
+    r.getContentText().split('<item>').slice(1).forEach(it => {
+      const g = t => { const m = it.match(new RegExp('<' + t + '>([\\s\\S]*?)</' + t + '>'));
+                       return m ? decode_(m[1].replace(/<!\[CDATA\[|\]\]>/g, '').trim()) : ''; };
+      const link = g('link');
+      if (!P2000_REGIONS.some(rg => link.indexOf(rg) !== -1)) return;
+      const m = link.match(/\/(\d+)\/p2000-/);
+      const id = m ? m[1] : g('guid');
+      if (seen[id]) return;
+      seen[id] = true;
+      items.push({
+        id: id,
+        time: new Date(g('pubDate')).toISOString(),
+        text: g('description'),
+        raw: g('title'),
+        city: P2000_CITIES[i],
+        url: link.split('?')[0]
+      });
+    });
+  });
+  items.sort((a, b) => a.time < b.time ? 1 : -1);
+  const out = { items: items.slice(0, 20), updated: new Date().toISOString() };
+  cache.put('p2000', JSON.stringify(out), P2000_CACHE_SEC);
+  return out;
+}
+
+function decode_(s) {
+  return s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
 }
 
 function json_(obj) {
