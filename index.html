@@ -456,6 +456,8 @@
   @keyframes jit2{0%{transform:translate(0,0) skewX(0)}50%{transform:translate(-9px,2px) skewX(-1.2deg);filter:brightness(1.35)}100%{transform:translate(6px,-1px)}}
 
   /* --- opstartscherm --- */
+  #stage.drift{transition:left var(--sht,3s) linear,top var(--sht,3s) linear,filter 20s ease}
+  #stage.dim{filter:brightness(.5)}
   #boot{position:absolute;inset:0;z-index:80;background:#010601;padding:70px 90px;font-family:var(--mono);font-size:30px;line-height:1.35;
         color:var(--txt);text-shadow:var(--glow);white-space:pre-wrap;overflow:hidden;transition:opacity .6s}
   #boot.gone{opacity:0;pointer-events:none}
@@ -559,6 +561,9 @@
 <script>
 /* ===== schalen naar het scherm ===== */
 const stage = document.getElementById('stage');
+// Screensavermodus: adres eindigt op #saver=1 (bijv. in Lively Wallpaper)
+const SAVER = (()=>{ try{ return new URLSearchParams(location.search).get('saver')==='1' || new URLSearchParams(location.hash.slice(1)).get('saver')==='1'; }catch(e){ return false; } })();
+let SH = {x:0, y:0}, LIM = {x:0, y:0};
 function fit(){
   // Gebruik het werkelijk zichtbare deel (visualViewport): klopt ook als Chrome op
   // "Desktopsite" staat of de pagina toch is ingezoomd.
@@ -568,15 +573,30 @@ function fit(){
   const W = 1600;
   const h = Math.max(960, Math.round(W * vh / vw));   // minder hoog scherm -> kleiner schalen, niet samenpersen
   stage.style.setProperty('--h', h + 'px');
-  const s = Math.min(vw/W, vh/h);
-  stage.style.left = (ox + vw/2) + 'px';
-  stage.style.top  = (oy + vh/2) + 'px';
+  const s = Math.min(vw/W, vh/h) * (SAVER ? 0.86 : 1);   // screensaver: iets kleiner, zodat het kan rondzweven
+  LIM = { x: Math.max(0,(vw - W*s)/2), y: Math.max(0,(vh - h*s)/2) };
+  stage.style.left = (ox + vw/2 + SH.x) + 'px';
+  stage.style.top  = (oy + vh/2 + SH.y) + 'px';
   stage.style.transform = `translate(-50%,-50%) scale(${s})`;
 }
 addEventListener('resize', fit);
 if(window.visualViewport){ visualViewport.addEventListener('resize', fit); visualViewport.addEventListener('scroll', fit); }
 addEventListener('orientationchange', ()=>setTimeout(fit, 300));
 fit();
+
+/* ===== tegen inbranden =====
+   Normaal: elke 3 minuten schuift het hele beeld ongemerkt een paar pixels op.
+   Screensaver (#saver=1): het beeld zweeft langzaam over het scherm en dimt na 10 minuten. */
+(function(){
+  const rnd2 = (a,b)=> a + Math.random()*(b-a);
+  function step(){
+    if(SAVER){ SH = { x: rnd2(-LIM.x, LIM.x), y: rnd2(-LIM.y, LIM.y) }; stage.style.setProperty('--sht','90s'); }
+    else     { SH = { x: Math.round(rnd2(-6,6)), y: Math.round(rnd2(-6,6)) }; stage.style.setProperty('--sht','4s'); }
+    fit();
+  }
+  setTimeout(()=>{ stage.classList.add('drift'); step(); setInterval(step, SAVER ? 90e3 : 180e3); }, 2000);
+  if(SAVER) setTimeout(()=> stage.classList.add('dim'), 10*60e3);
+})();
 
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,'0');
@@ -612,7 +632,7 @@ let CFG = loadCfg(), WEATHER = null, AGENDA = null, online = true;
   if(h.get('agenda')){ CFG.agendaUrl = h.get('agenda'); saveCfg(CFG); }
   if(h.get('code')){ CFG.agendaUrl = codeToUrl(h.get('code')); saveCfg(CFG); }
   if(h.get('door')){ CFG.doorbellUrl = h.get('door'); saveCfg(CFG); }
-  if(h.get('agenda')||h.get('code')||h.get('door')) history.replaceState(null,'',location.pathname+location.search); // geheim adres niet in de adresbalk laten staan
+  if(h.get('agenda')||h.get('code')||h.get('door')) history.replaceState(null,'',location.pathname+location.search+(SAVER?'#saver=1':'')); // geheim adres niet in de adresbalk laten staan
 }catch(e){} })();
 
 /* ===== klok ===== */
@@ -1000,7 +1020,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-14.23';
+const VERSION = '2026-11-15.1';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
