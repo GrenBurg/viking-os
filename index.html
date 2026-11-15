@@ -1020,7 +1020,7 @@ function runGlitch(){
 
 /* ===== automatisch bijwerken =====
    Na een wijziging in de GitHub-repo laadt de tablet zichzelf binnen ~10 minuten opnieuw. */
-const VERSION = '2026-11-15.1';
+const VERSION = '2026-11-15.2';
 async function checkUpdate(){
   try{
     const r = await fetch('version.json?t=' + Date.now(), {cache:'no-store'});
@@ -1034,6 +1034,7 @@ if(location.protocol.startsWith('http')) setInterval(checkUpdate, 10*60*1000);
 /* ===== scherm aan houden ===== */
 let wakeLock = null;
 async function keepAwake(){
+  if(SAVER) return;   // als achtergrond/screensaver (Lively) niet wakker houden, anders start de Windows-screensaver nooit
   try{ if('wakeLock' in navigator && document.visibilityState==='visible'){ wakeLock = await navigator.wakeLock.request('screen'); } }catch(e){}
 }
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ keepAwake(); loadWeather(); loadAgenda(); } });
