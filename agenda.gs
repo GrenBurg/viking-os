@@ -163,3 +163,40 @@ function decode_(s) {
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
+
+// ---------------------------------------------------------------
+// Houdbaar: afspraken toevoegen aan de gedeelde agenda
+// POST (text/plain) met JSON: {token, action:'add', title, end:'JJJJ-MM-DD', days, details}
+// Maakt per dag een hele-dag-afspraak: geel -> oranje -> rood op de laatste dag.
+// ---------------------------------------------------------------
+function doPost(e) {
+  let b = {};
+  try { b = JSON.parse((e && e.postData && e.postData.contents) || '{}'); } catch (err) { return json_({ error: 'ongeldige aanvraag' }); }
+  if (b.token !== TOKEN) return json_({ error: 'geen toegang (token klopt niet)' });
+  if (b.action !== 'add') return json_({ error: 'onbekende actie' });
+
+  const m = String(b.end || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return json_({ error: 'geen geldige datum' });
+  const end = new Date(+m[1], +m[2] - 1, +m[3]);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  if (end < today) return json_({ error: 'datum is al voorbij' });
+  const n = Math.max(1, Math.min(7, parseInt(b.days, 10) || 3));
+  const title = String(b.title || 'Vleeswaren').slice(0, 200);
+  const details = String(b.details || '').slice(0, 2000);
+
+  const wanted = CALENDAR_NAMES.map(x => x.trim().toLowerCase());
+  const cal = CalendarApp.getAllCalendars().filter(c => wanted.includes(c.getName().trim().toLowerCase()))[0];
+  if (!cal) return json_({ error: 'agenda niet gevonden' });
+
+  const kleuren = [CalendarApp.EventColor.YELLOW, CalendarApp.EventColor.ORANGE, CalendarApp.EventColor.RED]; // banaan, mandarijn, tomaat
+  const made = [];
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(end.getFullYear(), end.getMonth(), end.getDate() - i);
+    if (d < today) continue;
+    const t = i === 0 ? title + ' · LAATSTE DAG' : title;
+    const ev = cal.createAllDayEvent(t, d, { description: details });
+    ev.setColor(i === 0 ? kleuren[2] : i === 1 ? kleuren[1] : kleuren[0]);
+    made.push(Utilities.formatDate(d, Session.getScriptTimeZone(), 'yyyy-MM-dd'));
+  }
+  return json_({ ok: true, calendar: cal.getName(), days: made });
+}
